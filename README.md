@@ -104,7 +104,6 @@ cd PB
 - **🎯 自定义导出符号**: 为不同模块使用不同的导入导出符号，支持模块化构建
 - **⚡ 自动化符号注入**: 自动为所有生成的protobuf和gRPC类添加指定的导出符号
 - **📁 灵活的目录结构**: 支持任意深度的模块目录，自动创建对应的输出结构
-- **🔄 批量处理**: 一次处理指定目录下的多个proto文件
 - **🛠️ 路径自适应**: 自动处理相对路径和包含路径，支持绝对路径和相对路径
 - **✅ 智能包含**: 根据目录深度自动调整`pb_export.h`的包含路径
 - **📋 详细输出**: 显示处理进度、生成文件位置和完整目录结构
@@ -118,8 +117,7 @@ cd PB
 
 ## 前置条件
 
-1. 确保 `grpc_project` 已经通过cmake配置，vcpkg依赖已安装
-2. `pb_export.h` 文件存在于 `include/` 目录
+1. `pb_export.h` 文件存在于 `include/` 目录
 
 ## 输出
 
@@ -166,8 +164,10 @@ Proto目录参数: proto/perception
 
 1. **错误: protoc工具不存在**
    ```
-   解决方案: 确保grpc_project已经通过cmake配置，运行以下命令：
-   cd ../grpc_project/build && cmake ..
+   解决方案: 
+   # 检查protobuf工具,替换为自己的protobuf工具路径
+  PROTOC_PATH="$BUILD_DIR/vcpkg_installed/x64-linux/tools/protobuf/protoc"
+  GRPC_PLUGIN_PATH="$BUILD_DIR/vcpkg_installed/x64-linux/tools/grpc/grpc_cpp_plugin"
    ```
 
 2. **错误: Proto搜索目录不存在**
@@ -195,17 +195,7 @@ grep -n "YOUR_EXPORT_SYMBOL" include/module/file.grpc.pb.h
 
 ## 完整工作流程示例
 
-### 1. 准备工作
-```bash
-# 确保grpc_project已配置
-cd ../grpc_project/build
-cmake ..
-
-# 回到PB目录
-cd ../PB
-```
-
-### 2. 创建新模块
+### 1. 创建新模块
 ```bash
 # 创建tracking模块
 mkdir -p proto/tracking
@@ -227,7 +217,7 @@ service TrackingService {
 EOF
 ```
 
-### 3. 生成代码
+### 2. 生成代码
 ```bash
 # 为tracking模块生成代码
 ./generate_proto.sh proto/tracking TRACKING_API
@@ -236,7 +226,7 @@ EOF
 find include/tracking source/tracking -name "*.h" -o -name "*.cc"
 ```
 
-### 4. 验证符号
+### 3. 验证符号
 ```bash
 # 验证导出符号
 grep "TRACKING_API" include/tracking/tracking.pb.h
