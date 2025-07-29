@@ -1,13 +1,16 @@
-# 忽略所有生成的protobuf文件，只保留源文件和导出符号定义
-PB/include/
+# 忽略所有文件（除了明确允许的）
+*
 
-# 但是保留pb_export.h
-!PB/include/pb_export.h
+# 允许目录被扫描
+!*/
 
-# 忽略所有生成的源文件
-PB/source/
-
-！README.md
+# 只允许以下文件和目录
+!proto/
+!proto/**
+!include/pb_export.h
+!generate_proto.sh
+!README.md
+!.gitignore
 
 
 
