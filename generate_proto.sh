@@ -65,6 +65,7 @@ else
     exit 1
 fi
 
+
 echo "使用构建目录: $BUILD_DIR"
 
 # 检查protobuf工具

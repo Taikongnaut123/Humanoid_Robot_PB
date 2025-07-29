@@ -20,6 +20,7 @@ service ImageProcessing {
     // a unified implementation of both continuousTrack and continuousMask
 }
 
+
 message Img {
     bytes timeStamp = 1;
     bytes img = 2; 

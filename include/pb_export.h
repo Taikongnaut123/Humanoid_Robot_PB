@@ -26,8 +26,9 @@
 #endif
 
 #define PB_LOCAL
+
 #else
-// Linux/Unix平台
+// Linux/Unix平台and other compilers
 #if __GNUC__ >= 4
 #ifdef PERCEPTION_PB_EXPORTS
 #define PERCEPTION_PB_API __attribute__((visibility("default")))
