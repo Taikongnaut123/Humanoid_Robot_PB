@@ -164,11 +164,16 @@ Proto目录参数: proto/perception
 
 1. **错误: protoc工具不存在**
    ```
-   解决方案: 
-   # 检查protobuf工具,替换为自己的protobuf工具路径
-  PROTOC_PATH="$BUILD_DIR/vcpkg_installed/x64-linux/tools/protobuf/protoc"
-  GRPC_PLUGIN_PATH="$BUILD_DIR/vcpkg_installed/x64-linux/tools/grpc/grpc_cpp_plugin"
+   错误: protoc工具不存在: /path/to/build/vcpkg_installed/x64-linux/tools/protobuf/protoc
    ```
+   
+   **解决方案:**
+   - 如果工具路径不同，需要修改脚本中的工具路径：
+     ```bash
+     # 在generate_proto.sh中修改这两行（大约第67-68行）
+     PROTOC_PATH="你的protoc工具路径"
+     GRPC_PLUGIN_PATH="你的grpc_cpp_plugin工具路径"
+     ```
 
 2. **错误: Proto搜索目录不存在**
    ```
