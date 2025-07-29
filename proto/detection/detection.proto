@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package detection;
+
+// 目标检测结果
+message DetectionResult {
+    string object_id = 1;      // 目标ID
+    string class_name = 2;     // 类别名称
+    float confidence = 3;      // 置信度
+    BoundingBox bbox = 4;      // 边界框
+}
+
+// 边界框
+message BoundingBox {
+    float x = 1;      // 左上角x坐标
+    float y = 2;      // 左上角y坐标
+    float width = 3;  // 宽度
+    float height = 4; // 高度
+}
+
+// 检测请求
+message DetectionRequest {
+    bytes image_data = 1;      // 图像数据
+    string format = 2;         // 图像格式 (jpg, png等)
+    repeated string classes = 3; // 需要检测的类别
+}
+
+// 检测响应
+message DetectionResponse {
+    repeated DetectionResult results = 1; // 检测结果列表
+    int64 timestamp = 2;                 // 时间戳
+    bool success = 3;                    // 是否成功
+}
+
+// 目标检测服务
+service ObjectDetection {
+    // 单张图像检测
+    rpc DetectObjects(DetectionRequest) returns (DetectionResponse);
+    
+    // 批量检测
+    rpc BatchDetect(stream DetectionRequest) returns (stream DetectionResponse);
+}

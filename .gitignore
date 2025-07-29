@@ -1,0 +1,14 @@
+# 忽略所有生成的protobuf文件，只保留源文件和导出符号定义
+PB/include/
+
+# 但是保留pb_export.h
+!PB/include/pb_export.h
+
+# 忽略所有生成的源文件
+PB/source/
+
+！README.md
+
+
+
+
