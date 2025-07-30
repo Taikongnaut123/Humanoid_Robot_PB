@@ -19,6 +19,18 @@
 #define IMAGEPROCESSING_PB_API __declspec(dllimport)
 #endif
 
+#ifdef DETECTION_EXPORTS
+#define DETECTION_API __declspec(dllexport)
+#else
+#define DETECTION_API __declspec(dllimport)
+#endif
+
+#ifdef IMAGEPROCESSING_EXPORTS
+#define IMAGEPROCESSING_API __declspec(dllexport)
+#else
+#define IMAGEPROCESSING_API __declspec(dllimport)
+#endif
+
 #ifdef CALCULATE_PB_EXPORTS
 #define CALCULATE_PB_API __declspec(dllexport)
 #else
@@ -42,6 +54,18 @@
 #define IMAGEPROCESSING_PB_API __attribute__((visibility("default")))
 #endif
 
+#ifdef DETECTION_EXPORTS
+#define DETECTION_API __attribute__((visibility("default")))
+#else
+#define DETECTION_API __attribute__((visibility("default")))
+#endif
+
+#ifdef IMAGEPROCESSING_EXPORTS
+#define IMAGEPROCESSING_API __attribute__((visibility("default")))
+#else
+#define IMAGEPROCESSING_API __attribute__((visibility("default")))
+#endif
+
 #ifdef CALCULATE_PB_EXPORTS
 #define CALCULATE_PB_API __attribute__((visibility("default")))
 #else
@@ -52,6 +76,8 @@
 #else
 #define PERCEPTION_PB_API
 #define IMAGEPROCESSING_PB_API
+#define DETECTION_API
+#define IMAGEPROCESSING_API
 #define CALCULATE_PB_API
 #define PB_LOCAL
 #endif
