@@ -133,8 +133,11 @@ endif()
 string(REPLACE ";" " " SUBMODULES_STRING "${FOUND_SUBMODULES}")
 set(SUBMODULES "${SUBMODULES_STRING}")
 
+# 设置配置文件中需要的变量
+set(LIBRARY_TARGETS "${LIBRARY_TARGETS_CONFIG}")
+
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/PBConfig.cmake.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PBConfig.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/PBConfig.cmake"
     @ONLY
 )

@@ -14,3 +14,6 @@
 !tests/
 !tests/**
 !CMakeLists.txt
+！cmake/
+!cmake/**
+!*.md
