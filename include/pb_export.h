@@ -2,7 +2,7 @@
 #define PB_EXPORT_H
 
 // PB 模块导出符号定义
-// 当前支持的模块：common、detection、perception
+// 当前支持的模块：common、detection、perception、interfaces
 
 // 检查编译器和平台
 #ifdef _WIN32
@@ -23,6 +23,12 @@
 #define PERCEPTION_API __declspec(dllexport)
 #else
 #define PERCEPTION_API __declspec(dllimport)
+#endif
+
+#ifdef INTERFACES_EXPORTS
+#define INTERFACES_API __declspec(dllexport)
+#else
+#define INTERFACES_API __declspec(dllimport)
 #endif
 
 #define PB_LOCAL
@@ -48,11 +54,18 @@
 #define PERCEPTION_API __attribute__((visibility("default")))
 #endif
 
+#ifdef INTERFACES_EXPORTS
+#define INTERFACES_API __attribute__((visibility("default")))
+#else
+#define INTERFACES_API __attribute__((visibility("default")))
+#endif
+
 #define PB_LOCAL __attribute__((visibility("hidden")))
 #else
 #define COMMON_API
 #define DETECTION_API
 #define PERCEPTION_API
+#define INTERFACES_API
 #define PB_LOCAL
 #endif
 #endif

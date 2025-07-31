@@ -1,0 +1,179 @@
+syntax = "proto3";
+
+package interfaces;
+
+// Import the base variant types
+import "common/variant.proto";
+
+// Common result status enum
+enum ResultStatus {
+  STATUS_UNKNOWN = 0;
+  STATUS_SUCCESS = 1;
+  STATUS_FAILED = 2;
+  STATUS_TIMEOUT = 3;
+  STATUS_CANCELLED = 4;
+  STATUS_PENDING = 5;
+}
+
+// Common error information
+message ErrorInfo {
+  string code = 1;        // 错误代码
+  string message = 2;     // 错误消息
+  string details = 3;     // 详细信息
+  int64 timestamp = 4;    // 错误发生时间戳
+}
+
+// Common parameter structure using Dictionary
+message Params {
+  base_types.Dictionary parameters = 1;  // 通用参数字典
+  int32 timeout = 2;                     // 超时时间（秒）
+  string correlationId = 3;              // 关联ID
+}
+
+// =============================================================================
+// Unified Operations (gRPC supports both sync/async automatically)
+// =============================================================================
+
+// Create Request
+message CreateRequest {
+  base_types.Dictionary requestData = 1;  // 创建请求数据
+  Params params = 2;                      // 附加参数
+}
+
+// Create Response
+message CreateResponse {
+  ResultStatus status = 1;                // 操作状态
+  string message = 2;                     // 响应消息
+  base_types.Dictionary responseData = 3; // 创建结果数据
+  ErrorInfo error = 4;                    // 错误信息（如果有）
+  string resourceId = 5;                  // 创建的资源ID
+}
+
+// Send Request
+message SendRequest {
+  string targetId = 1;                    // 目标ID
+  base_types.Dictionary messageData = 2;  // 发送的消息数据
+  Params params = 3;                      // 附加参数
+}
+
+// Send Response
+message SendResponse {
+  ResultStatus status = 1;                // 发送状态
+  string message = 2;                     // 响应消息
+  base_types.Dictionary responseData = 3; // 发送结果数据
+  ErrorInfo error = 4;                    // 错误信息（如果有）
+  string messageId = 5;                   // 消息ID
+}
+
+// Delete Request
+message DeleteRequest {
+  string resourceId = 1;                  // 要删除的资源ID
+  base_types.Dictionary deleteData = 2;   // 删除相关数据
+  Params params = 3;                      // 附加参数
+}
+
+// Delete Response
+message DeleteResponse {
+  ResultStatus status = 1;                // 删除状态
+  string message = 2;                     // 响应消息
+  base_types.Dictionary responseData = 3; // 删除结果数据
+  ErrorInfo error = 4;                    // 错误信息（如果有）
+}
+
+// Subscribe Request
+message SubscribeRequest {
+  string topicId = 1;                     // 订阅主题ID
+  base_types.Dictionary subscribeData = 2; // 订阅相关数据
+  Params params = 3;                      // 附加参数
+  string callbackUrl = 4;                 // 回调地址
+}
+
+// Subscribe Response
+message SubscribeResponse {
+  ResultStatus status = 1;                // 订阅状态
+  string message = 2;                     // 响应消息
+  string subscriptionId = 3;              // 订阅ID
+  base_types.Dictionary responseData = 4; // 订阅结果数据
+  ErrorInfo error = 5;                    // 错误信息（如果有）
+}
+
+// Unsubscribe Request
+message UnsubscribeRequest {
+  string subscriptionId = 1;              // 订阅ID
+  base_types.Dictionary unsubscribeData = 2; // 取消订阅相关数据
+  Params params = 3;                      // 附加参数
+}
+
+// Unsubscribe Response
+message UnsubscribeResponse {
+  ResultStatus status = 1;                // 取消订阅状态
+  string message = 2;                     // 响应消息
+  base_types.Dictionary responseData = 3; // 取消订阅结果数据
+  ErrorInfo error = 4;                    // 错误信息（如果有）
+}
+
+// =============================================================================
+// Batch Operations
+// =============================================================================
+
+// Batch Create Request
+message BatchCreateRequest {
+  string batchId = 1;                                // 批次ID
+  repeated base_types.Dictionary requestDataList = 2; // 批量创建请求数据
+  Params params = 3;                                 // 附加参数
+  bool atomicOperation = 4;                          // 是否为原子操作
+}
+
+// Batch Create Response
+message BatchCreateResponse {
+  string batchId = 1;                                // 批次ID
+  ResultStatus overallStatus = 2;                    // 整体状态
+  repeated CreateResponse results = 3;               // 各项创建结果
+  int32 successCount = 4;                           // 成功数量
+  int32 failedCount = 5;                            // 失败数量
+  ErrorInfo error = 6;                              // 整体错误信息（如果有）
+}
+
+// =============================================================================
+// Query Operations
+// =============================================================================
+
+// Query Request
+message QueryRequest {
+  string queryId = 1;                    // 查询ID
+  base_types.Dictionary queryConditions = 2; // 查询条件
+  Params params = 3;                     // 附加参数
+  int32 limit = 4;                       // 查询限制数量
+  int32 offset = 5;                      // 查询偏移量
+  repeated string sortFields = 6;        // 排序字段
+}
+
+// Query Response
+message QueryResponse {
+  string queryId = 1;                    // 查询ID
+  ResultStatus status = 2;               // 查询状态
+  repeated base_types.Dictionary results = 3; // 查询结果
+  int32 totalCount = 4;                  // 总数量
+  bool hasMore = 5;                      // 是否有更多数据
+  ErrorInfo error = 6;                   // 错误信息（如果有）
+  string nextPageToken = 7;              // 下一页标记
+}
+
+// =============================================================================
+// Health Check Operations
+// =============================================================================
+
+// Health Check Request
+message HealthCheckRequest {
+  string service = 1;                    // 服务名称
+  base_types.Dictionary checkParams = 2; // 检查参数
+}
+
+// Health Check Response
+message HealthCheckResponse {
+  string service = 1;                    // 服务名称
+  ResultStatus status = 2;               // 健康状态
+  string message = 3;                    // 状态消息
+  base_types.Dictionary metrics = 4;     // 性能指标
+  base_types.Timestamp lastCheckTime = 5; // 最后检查时间
+}

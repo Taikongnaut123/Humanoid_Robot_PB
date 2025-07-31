@@ -83,16 +83,27 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
         add_dependencies(${TEST_NAME} libcommon)
         message(STATUS "Created common test: ${TEST_NAME}")
         
+    elseif(TEST_NAME MATCHES ".*interfaces.*")
+        target_link_libraries(${TEST_NAME}
+            libinterfaces
+            libcommon
+            protobuf::libprotobuf
+            gRPC::grpc++
+        )
+        add_dependencies(${TEST_NAME} libinterfaces libcommon)
+        message(STATUS "Created interfaces test: ${TEST_NAME}")
+        
     else()
         # 通用测试，链接所有库
         target_link_libraries(${TEST_NAME}
             libdetection
             libperception
             libcommon
+            libinterfaces
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libdetection libperception libcommon)
+        add_dependencies(${TEST_NAME} libdetection libperception libcommon libinterfaces)
         message(STATUS "Created general test: ${TEST_NAME}")
     endif()
     

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package interfaces;
+
+// Import the request/response message definitions
+import "interfaces/interfaces_request_response.proto";
+
+// =============================================================================
+// Main Interface Service - All Operations
+// =============================================================================
+
+service InterfaceService {
+  // Basic CRUD operations (gRPC automatically supports sync/async)
+  rpc Create(CreateRequest) returns (CreateResponse);
+  rpc Send(SendRequest) returns (SendResponse);
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+  rpc Subscribe(SubscribeRequest) returns (stream SubscribeResponse);
+  rpc Unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
+  rpc Query(QueryRequest) returns (QueryResponse);
+  rpc BatchCreate(BatchCreateRequest) returns (BatchCreateResponse);
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+
