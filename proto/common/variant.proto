@@ -2,101 +2,171 @@ syntax = "proto3";
 
 package base_types;
 
-// Type enumeration for runtime type checking
-enum VariantType {
-  VARIANT_TYPE_UNKNOWN = 0;
-  VARIANT_TYPE_INT32 = 1;
-  VARIANT_TYPE_INT64 = 2;
-  VARIANT_TYPE_UINT32 = 3;
-  VARIANT_TYPE_UINT64 = 4;
-  VARIANT_TYPE_FLOAT = 5;
-  VARIANT_TYPE_DOUBLE = 6;
-  VARIANT_TYPE_BOOL = 7;
-  VARIANT_TYPE_STRING = 8;
-  VARIANT_TYPE_BINARY = 9;
-  VARIANT_TYPE_ARRAY = 10;
-  VARIANT_TYPE_MAP = 11;
+// Date type (YYYY-MM-DD)
+message Date {
+  int32 year = 1;   // 年份，如 2025
+  int32 month = 2;  // 月份，1-12
+  int32 day = 3;    // 日期，1-31
 }
 
-// Type-safe wrapper messages for TypedVariant
-message TypedInt32 {
-  VariantType type = 1;  // Always VARIANT_TYPE_INT32
-  int32 value = 2;
+// Timestamp type (with nanosecond precision)
+message Timestamp {
+  int64 seconds = 1;      // 自1970年1月1日UTC以来的秒数
+  int32 nanos = 2;        // 纳秒部分 (0-999,999,999)
 }
 
-message TypedInt64 {
-  VariantType type = 1;  // Always VARIANT_TYPE_INT64
-  int64 value = 2;
+// Array types for all supported data types
+message BoolArray {
+  repeated bool values = 1;
 }
 
-message TypedUInt32 {
-  VariantType type = 1;  // Always VARIANT_TYPE_UINT32
-  uint32 value = 2;
+message Int8Array {
+  repeated int32 values = 1;  // protobuf uses int32 for int8
 }
 
-message TypedUInt64 {
-  VariantType type = 1;  // Always VARIANT_TYPE_UINT64
-  uint64 value = 2;
+message UInt8Array {
+  repeated uint32 values = 1;  // protobuf uses uint32 for uint8
 }
 
-message TypedFloat {
-  VariantType type = 1;  // Always VARIANT_TYPE_FLOAT
-  float value = 2;
+message Int16Array {
+  repeated int32 values = 1;  // protobuf uses int32 for int16
 }
 
-message TypedDouble {
-  VariantType type = 1;  // Always VARIANT_TYPE_DOUBLE
-  double value = 2;
+message UInt16Array {
+  repeated uint32 values = 1;  // protobuf uses uint32 for uint16
 }
 
-message TypedBool {
-  VariantType type = 1;  // Always VARIANT_TYPE_BOOL
-  bool value = 2;
+message Int32Array {
+  repeated int32 values = 1;
 }
 
-message TypedString {
-  VariantType type = 1;  // Always VARIANT_TYPE_STRING
-  string value = 2;
+message UInt32Array {
+  repeated uint32 values = 1;
 }
 
-message TypedBinary {
-  VariantType type = 1;  // Always VARIANT_TYPE_BINARY
-  bytes value = 2;
+message Int64Array {
+  repeated int64 values = 1;
 }
 
-// Type-safe variant using wrapper approach
-message TypedVariant {
-  oneof typed_value {
-    TypedInt32 int32_val = 1;
-    TypedInt64 int64_val = 2;
-    TypedUInt32 uint32_val = 3;
-    TypedUInt64 uint64_val = 4;
-    TypedFloat float_val = 5;
-    TypedDouble double_val = 6;
-    TypedBool bool_val = 7;
-    TypedString string_val = 8;
-    TypedBinary binary_val = 9;
-    TypedArray array_val = 10;
-    TypedMap map_val = 11;
+message UInt64Array {
+  repeated uint64 values = 1;
+}
+
+message FloatArray {
+  repeated float values = 1;
+}
+
+message DoubleArray {
+  repeated double values = 1;
+}
+
+message CharArray {
+  repeated string values = 1;  // 每个元素是一个字符
+}
+
+message ByteArray {
+  bytes values = 1;  // 字节数组
+}
+
+message StringArray {
+  repeated string values = 1;
+}
+
+message DateArray {
+  repeated Date values = 1;
+}
+
+message TimestampArray {
+  repeated Timestamp values = 1;
+}
+
+// Dictionary for key-value storage
+message Dictionary {
+  map<string, Variant> keyvaluelist = 1;        // 数据字典
+}
+
+// Simple and efficient Variant using oneof + type
+message Variant {
+  // Type enumeration for runtime type checking (nested enum)
+  enum Type {
+    KUnknownValue = 0;
+    // Basic types (matching oneof tags)
+    KBoolValue = 2;
+    KInt8Value = 3;
+    KUint8Value = 4;
+    KInt16Value = 5;
+    KUint16Value = 6;
+    KInt32Value = 7;
+    KUint32Value = 8;
+    KInt64Value = 9;
+    KUint64Value = 10;
+    KFloatValue = 11;
+    KDoubleValue = 12;
+    KCharValue = 13;
+    KByteValue = 14;
+    KStringValue = 15;
+    KDateValue = 16;
+    KTimestampValue = 17;
+    KDictValue = 18;
+    // Reserved: 19-20 (for future basic types)
+    // Array types
+    KBoolArrayValue = 21;
+    KInt8ArrayValue = 22;
+    KUint8ArrayValue = 23;
+    KInt16ArrayValue = 24;
+    KUint16ArrayValue = 25;
+    KInt32ArrayValue = 26;
+    KUint32ArrayValue = 27;
+    KInt64ArrayValue = 28;
+    KUint64ArrayValue = 29;
+    KFloatArrayValue = 30;
+    KDoubleArrayValue = 31;
+    KCharArrayValue = 32;
+    KByteArrayValue = 33;
+    KStringArrayValue = 34;
+    KDateArrayValue = 35;
+    KTimestampArrayValue = 36;
   }
-}
-
-// Array of TypedVariants (for recursive structure)
-message VariantArray {
-  repeated TypedVariant values = 1;
-}
-
-// Map of string keys to TypedVariant values
-message VariantMap {
-  map<string, TypedVariant> values = 1;
-}
-
-message TypedArray {
-  VariantType type = 1;  // Always VARIANT_TYPE_ARRAY
-  VariantArray value = 2;
-}
-
-message TypedMap {
-  VariantType type = 1;  // Always VARIANT_TYPE_MAP
-  VariantMap value = 2;
+  
+  Type type = 1;  // Explicit type field for runtime checking
+  
+  oneof value {
+    // Basic types
+    bool boolValue = 2;
+    int32 int8Value = 3;      // int8 stored as int32
+    uint32 uint8Value = 4;    // uint8 stored as uint32
+    int32 int16Value = 5;     // int16 stored as int32
+    uint32 uint16Value = 6;   // uint16 stored as uint32
+    int32 int32Value = 7;
+    uint32 uint32Value = 8;
+    int64 int64Value = 9;
+    uint64 uint64Value = 10;
+    float floatValue = 11;
+    double doubleValue = 12;
+    uint32 charValue = 13;    // single character as uint8 stored in uint32
+    bytes byteValue = 14;     // single byte
+    string stringValue = 15;
+    Date dateValue = 16;
+    Timestamp timestampValue = 17;
+    Dictionary dictValue = 18;
+    // Reserved: 19-20 (for future use)
+    
+    // Array types
+    BoolArray boolArrayValue = 21;
+    Int8Array int8ArrayValue = 22;
+    UInt8Array uint8ArrayValue = 23;
+    Int16Array int16ArrayValue = 24;
+    UInt16Array uint16ArrayValue = 25;
+    Int32Array int32ArrayValue = 26;
+    UInt32Array uint32ArrayValue = 27;
+    Int64Array int64ArrayValue = 28;
+    UInt64Array uint64ArrayValue = 29;
+    FloatArray floatArrayValue = 30;
+    DoubleArray doubleArrayValue = 31;
+    CharArray charArrayValue = 32;
+    ByteArray byteArrayValue = 33;
+    StringArray stringArrayValue = 34;
+    DateArray dateArrayValue = 35;
+    TimestampArray timestampArrayValue = 36;
+  }
 }

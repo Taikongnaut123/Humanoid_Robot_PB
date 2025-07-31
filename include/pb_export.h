@@ -2,11 +2,17 @@
 #define PB_EXPORT_H
 
 // PB 模块导出符号定义
-// 当前支持的模块：detection、perception
+// 当前支持的模块：common、detection、perception
 
 // 检查编译器和平台
 #ifdef _WIN32
 // Windows平台
+#ifdef COMMON_EXPORTS
+#define COMMON_API __declspec(dllexport)
+#else
+#define COMMON_API __declspec(dllimport)
+#endif
+
 #ifdef DETECTION_EXPORTS
 #define DETECTION_API __declspec(dllexport)
 #else
@@ -24,6 +30,12 @@
 #else
 // Linux/Unix平台
 #if __GNUC__ >= 4
+#ifdef COMMON_EXPORTS
+#define COMMON_API __attribute__((visibility("default")))
+#else
+#define COMMON_API __attribute__((visibility("default")))
+#endif
+
 #ifdef DETECTION_EXPORTS
 #define DETECTION_API __attribute__((visibility("default")))
 #else
@@ -38,6 +50,7 @@
 
 #define PB_LOCAL __attribute__((visibility("hidden")))
 #else
+#define COMMON_API
 #define DETECTION_API
 #define PERCEPTION_API
 #define PB_LOCAL
