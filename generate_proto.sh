@@ -56,10 +56,10 @@ echo "搜索 Proto 文件目录: $PROTO_SEARCH_DIR"
 
 # 查找build目录（在grpc_project中）
 BUILD_DIR=""
-if [ -d "$PB_ROOT/../grpc_project/build" ]; then
-    BUILD_DIR="$PB_ROOT/../grpc_project/build"
-elif [ -d "/home/ubuntu/zhaokai/vs_workspace/test_push/grpc_project/build" ]; then
-    BUILD_DIR="/home/ubuntu/zhaokai/vs_workspace/test_push/grpc_project/build"
+if [ -d "$PB_ROOT/../build" ]; then
+    BUILD_DIR="$PB_ROOT/../build"
+elif [ -d "$PB_ROOT/build" ]; then
+    BUILD_DIR="$PB_ROOT//build"
 else
     echo "错误: 找不到构建目录，请确保grpc_project已经配置过"
     exit 1
