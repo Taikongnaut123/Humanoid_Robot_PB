@@ -74,15 +74,25 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
         add_dependencies(${TEST_NAME} libperception)
         message(STATUS "Created perception test: ${TEST_NAME}")
         
+    elseif(TEST_NAME MATCHES ".*common.*")
+        target_link_libraries(${TEST_NAME}
+            libcommon
+            protobuf::libprotobuf
+            gRPC::grpc++
+        )
+        add_dependencies(${TEST_NAME} libcommon)
+        message(STATUS "Created common test: ${TEST_NAME}")
+        
     else()
         # 通用测试，链接所有库
         target_link_libraries(${TEST_NAME}
             libdetection
             libperception
+            libcommon
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libdetection libperception)
+        add_dependencies(${TEST_NAME} libdetection libperception libcommon)
         message(STATUS "Created general test: ${TEST_NAME}")
     endif()
     
