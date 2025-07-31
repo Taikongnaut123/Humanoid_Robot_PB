@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package base_types;
+
+// Type enumeration for runtime type checking
+enum VariantType {
+  VARIANT_TYPE_UNKNOWN = 0;
+  VARIANT_TYPE_INT32 = 1;
+  VARIANT_TYPE_INT64 = 2;
+  VARIANT_TYPE_UINT32 = 3;
+  VARIANT_TYPE_UINT64 = 4;
+  VARIANT_TYPE_FLOAT = 5;
+  VARIANT_TYPE_DOUBLE = 6;
+  VARIANT_TYPE_BOOL = 7;
+  VARIANT_TYPE_STRING = 8;
+  VARIANT_TYPE_BINARY = 9;
+  VARIANT_TYPE_ARRAY = 10;
+  VARIANT_TYPE_MAP = 11;
+}
+
+// Type-safe wrapper messages for TypedVariant
+message TypedInt32 {
+  VariantType type = 1;  // Always VARIANT_TYPE_INT32
+  int32 value = 2;
+}
+
+message TypedInt64 {
+  VariantType type = 1;  // Always VARIANT_TYPE_INT64
+  int64 value = 2;
+}
+
+message TypedUInt32 {
+  VariantType type = 1;  // Always VARIANT_TYPE_UINT32
+  uint32 value = 2;
+}
+
+message TypedUInt64 {
+  VariantType type = 1;  // Always VARIANT_TYPE_UINT64
+  uint64 value = 2;
+}
+
+message TypedFloat {
+  VariantType type = 1;  // Always VARIANT_TYPE_FLOAT
+  float value = 2;
+}
+
+message TypedDouble {
+  VariantType type = 1;  // Always VARIANT_TYPE_DOUBLE
+  double value = 2;
+}
+
+message TypedBool {
+  VariantType type = 1;  // Always VARIANT_TYPE_BOOL
+  bool value = 2;
+}
+
+message TypedString {
+  VariantType type = 1;  // Always VARIANT_TYPE_STRING
+  string value = 2;
+}
+
+message TypedBinary {
+  VariantType type = 1;  // Always VARIANT_TYPE_BINARY
+  bytes value = 2;
+}
+
+// Type-safe variant using wrapper approach
+message TypedVariant {
+  oneof typed_value {
+    TypedInt32 int32_val = 1;
+    TypedInt64 int64_val = 2;
+    TypedUInt32 uint32_val = 3;
+    TypedUInt64 uint64_val = 4;
+    TypedFloat float_val = 5;
+    TypedDouble double_val = 6;
+    TypedBool bool_val = 7;
+    TypedString string_val = 8;
+    TypedBinary binary_val = 9;
+    TypedArray array_val = 10;
+    TypedMap map_val = 11;
+  }
+}
+
+// Array of TypedVariants (for recursive structure)
+message VariantArray {
+  repeated TypedVariant values = 1;
+}
+
+// Map of string keys to TypedVariant values
+message VariantMap {
+  map<string, TypedVariant> values = 1;
+}
+
+message TypedArray {
+  VariantType type = 1;  // Always VARIANT_TYPE_ARRAY
+  VariantArray value = 2;
+}
+
+message TypedMap {
+  VariantType type = 1;  // Always VARIANT_TYPE_MAP
+  VariantMap value = 2;
+}
