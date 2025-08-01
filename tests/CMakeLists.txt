@@ -58,52 +58,52 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
     # 根据测试名称链接对应的库
     if(TEST_NAME MATCHES ".*detection.*")
         target_link_libraries(${TEST_NAME}
-            libdetection
+            libdetectionPB
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libdetection)
+        add_dependencies(${TEST_NAME} libdetectionPB)
         message(STATUS "Created detection test: ${TEST_NAME}")
         
     elseif(TEST_NAME MATCHES ".*perception.*")
         target_link_libraries(${TEST_NAME}
-            libperception
+            libperceptionPB
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libperception)
+        add_dependencies(${TEST_NAME} libperceptionPB)
         message(STATUS "Created perception test: ${TEST_NAME}")
         
     elseif(TEST_NAME MATCHES ".*common.*")
         target_link_libraries(${TEST_NAME}
-            libcommon
+            libcommonPB
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libcommon)
+        add_dependencies(${TEST_NAME} libcommonPB)
         message(STATUS "Created common test: ${TEST_NAME}")
         
     elseif(TEST_NAME MATCHES ".*interfaces.*")
         target_link_libraries(${TEST_NAME}
-            libinterfaces
-            libcommon
+            libinterfacesPB
+            libcommonPB
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libinterfaces libcommon)
+        add_dependencies(${TEST_NAME} libinterfacesPB libcommonPB)
         message(STATUS "Created interfaces test: ${TEST_NAME}")
         
     else()
         # 通用测试，链接所有库
         target_link_libraries(${TEST_NAME}
-            libdetection
-            libperception
-            libcommon
-            libinterfaces
+            libdetectionPB
+            libperceptionPB
+            libcommonPB
+            libinterfacesPB
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libdetection libperception libcommon libinterfaces)
+        add_dependencies(${TEST_NAME} libdetectionPB libperceptionPB libcommonPB libinterfacesPB)
         message(STATUS "Created general test: ${TEST_NAME}")
     endif()
     

@@ -44,12 +44,12 @@ foreach(SUBMODULE ${SUBMODULES})
         )
         
         if(SUBMODULE_SOURCES)
-            # 创建动态库目标，库名为lib+子模块名
-            set(LIBRARY_NAME "lib${SUBMODULE}")
+            # 创建动态库目标，库名为lib+子模块名+PB
+            set(LIBRARY_NAME "lib${SUBMODULE}PB")
             add_library(${LIBRARY_NAME} SHARED ${SUBMODULE_SOURCES})
             
             # 创建带命名空间的别名，方便其他项目使用
-            add_library(PB::${SUBMODULE} ALIAS ${LIBRARY_NAME})
+            add_library(PB::${SUBMODULE}PB ALIAS ${LIBRARY_NAME})
             
             # 添加到找到的子模块列表
             list(APPEND FOUND_SUBMODULES ${SUBMODULE})
@@ -57,15 +57,15 @@ foreach(SUBMODULE ${SUBMODULES})
             # 为配置文件添加库目标信息
             string(APPEND LIBRARY_TARGETS_CONFIG "# Target for ${SUBMODULE} submodule\n")
             string(APPEND LIBRARY_TARGETS_CONFIG "set(PB_${SUBMODULE}_FOUND TRUE)\n")
-            string(APPEND LIBRARY_TARGETS_CONFIG "set(PB_${SUBMODULE}_LIBRARY PB::${SUBMODULE})\n\n")
+            string(APPEND LIBRARY_TARGETS_CONFIG "set(PB_${SUBMODULE}_LIBRARY PB::${SUBMODULE}PB)\n\n")
             
             # 设置目标属性
             set_target_properties(${LIBRARY_NAME} PROPERTIES
-                OUTPUT_NAME "${SUBMODULE}"  # 输出文件名不包含lib前缀（系统会自动添加）
+                OUTPUT_NAME "${SUBMODULE}PB"  # 输出文件名包含PB后缀
                 VERSION ${PROJECT_VERSION}
                 SOVERSION ${PROJECT_VERSION_MAJOR}
                 POSITION_INDEPENDENT_CODE ON
-                EXPORT_NAME ${SUBMODULE}  # 导出时使用子模块名
+                EXPORT_NAME ${SUBMODULE}PB  # 导出时使用子模块名+PB
             )
             
             # 添加包含目录
