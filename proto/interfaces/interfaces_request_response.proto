@@ -85,7 +85,12 @@ message SubscribeRequest {
   string topicId = 1;                     // 订阅主题ID
   base_types.Dictionary subscribeData = 2; // 订阅相关数据
   Params params = 3;                      // 附加参数
-  string callbackUrl = 4;                 // 回调地址
+  string callbackUrl = 4;                 // 回调地址（用于HTTP回调，可选）
+  string objectId = 5;                    // 对象ID（用户自定义标识）
+  string clientEndpoint = 6;              // 客户端gRPC服务端点（用于gRPC回调）
+  bool persistentSubscription = 7;        // 是否为持久订阅
+  int32 heartbeatInterval = 8;            // 心跳间隔（秒）
+  repeated string eventTypes = 9;         // 订阅的事件类型
 }
 
 // Subscribe Response

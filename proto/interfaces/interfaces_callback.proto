@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package interfaces;
+
+// Import the base variant types and request/response messages
+import "common/variant.proto";
+import "interfaces/interfaces_request_response.proto";
+
+// =============================================================================
+// Client Callback Service - Server主动调用Client的服务
+// =============================================================================
+
+service ClientCallbackService {
+  // 服务端推送订阅消息给客户端
+  rpc OnSubscriptionMessage(SubscriptionNotification) returns (NotificationAck);
+  
+  // 服务端推送订阅状态变化给客户端
+  rpc OnSubscriptionStatusChange(SubscriptionStatusChange) returns (NotificationAck);
+  
+  // 服务端推送错误信息给客户端
+  rpc OnSubscriptionError(SubscriptionError) returns (NotificationAck);
+}
+
+// =============================================================================
+// 回调消息定义
+// =============================================================================
+
+// 订阅消息通知
+message SubscriptionNotification {
+  string subscriptionId = 1;              // 订阅ID
+  string objectId = 2;                    // 对象ID（用户传入的objectID）
+  string topicId = 3;                     // 主题ID
+  base_types.Dictionary messageData = 4;  // 消息内容
+  int64 timestamp = 5;                    // 消息时间戳
+  string messageId = 6;                   // 消息唯一ID
+  base_types.Dictionary metadata = 7;     // 元数据
+}
+
+// 订阅状态变化通知
+message SubscriptionStatusChange {
+  string subscriptionId = 1;              // 订阅ID
+  string objectId = 2;                    // 对象ID
+  SubscriptionStatus oldStatus = 3;       // 旧状态
+  SubscriptionStatus newStatus = 4;       // 新状态
+  string reason = 5;                      // 状态变化原因
+  int64 timestamp = 6;                    // 变化时间戳
+}
+
+// 订阅错误通知
+message SubscriptionError {
+  string subscriptionId = 1;              // 订阅ID
+  string objectId = 2;                    // 对象ID
+  ErrorInfo error = 3;                    // 错误信息
+  bool isRecoverable = 4;                 // 是否可恢复
+  int64 timestamp = 5;                    // 错误时间戳
+}
+
+// 通知确认响应
+message NotificationAck {
+  bool received = 1;                      // 是否已接收
+  string ackId = 2;                       // 确认ID
+  string message = 3;                     // 确认消息
+  int64 timestamp = 4;                    // 确认时间戳
+}
+
+// 订阅状态枚举
+enum SubscriptionStatus {
+  SUBSCRIPTION_UNKNOWN = 0;
+  SUBSCRIPTION_ACTIVE = 1;              // 活跃订阅
+  SUBSCRIPTION_SUSPENDED = 2;           // 暂停订阅
+  SUBSCRIPTION_ERROR = 3;               // 错误状态
+  SUBSCRIPTION_CANCELLED = 4;           // 已取消
+  SUBSCRIPTION_EXPIRED = 5;             // 已过期
+}
