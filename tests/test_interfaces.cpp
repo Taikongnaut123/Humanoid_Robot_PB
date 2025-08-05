@@ -178,31 +178,6 @@ void test_other_requests()
             print_test_result("Query active condition value", true, it->second.boolvalue());
         }
     }
-
-    // 测试 HealthCheckRequest
-    {
-        interfaces::HealthCheckRequest request;
-        request.set_service("interface_service");
-
-        // 设置检查参数
-        base_types::Dictionary *check_params = request.mutable_checkparams();
-        base_types::Variant var;
-        var.set_type(base_types::Variant::KStringValue);
-        var.set_stringvalue("basic");
-        (*check_params->mutable_keyvaluelist())["check_type"] = var;
-
-        print_test_result("HealthCheckRequest service", std::string("interface_service"),
-                          request.service());
-        print_test_result("HealthCheckRequest has checkParams", true, request.has_checkparams());
-
-        const auto &params_dict = request.checkparams().keyvaluelist();
-        auto it = params_dict.find("check_type");
-        print_test_result("Check params has check_type", true, it != params_dict.end());
-        if (it != params_dict.end())
-        {
-            print_test_result("Check type value", std::string("basic"), it->second.stringvalue());
-        }
-    }
 }
 
 // 测试序列化

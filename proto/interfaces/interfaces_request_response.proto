@@ -117,26 +117,16 @@ message UnsubscribeResponse {
   ErrorInfo error = 4;                    // 错误信息（如果有）
 }
 
-// =============================================================================
-// Batch Operations
-// =============================================================================
-
-// Batch Create Request
-message BatchCreateRequest {
-  string batchId = 1;                                // 批次ID
-  repeated base_types.Dictionary requestDataList = 2; // 批量创建请求数据
-  Params params = 3;                                 // 附加参数
-  bool atomicOperation = 4;                          // 是否为原子操作
+// Action Request
+message ActionRequest {
+  base_types.Dictionary input = 1; // Action操作信息
+  Params params = 2;                      // 附加参数
 }
 
-// Batch Create Response
-message BatchCreateResponse {
-  string batchId = 1;                                // 批次ID
-  ResultStatus overallStatus = 2;                    // 整体状态
-  repeated CreateResponse results = 3;               // 各项创建结果
-  int32 successCount = 4;                           // 成功数量
-  int32 failedCount = 5;                            // 失败数量
-  ErrorInfo error = 6;                              // 整体错误信息（如果有）
+// Action Response
+message ActionResponse {
+  base_types.Dictionary output = 1; // Action操作信息
+  int32 ret = 2;                    // 返回码
 }
 
 // =============================================================================
@@ -162,23 +152,4 @@ message QueryResponse {
   bool hasMore = 5;                      // 是否有更多数据
   ErrorInfo error = 6;                   // 错误信息（如果有）
   string nextPageToken = 7;              // 下一页标记
-}
-
-// =============================================================================
-// Health Check Operations
-// =============================================================================
-
-// Health Check Request
-message HealthCheckRequest {
-  string service = 1;                    // 服务名称
-  base_types.Dictionary checkParams = 2; // 检查参数
-}
-
-// Health Check Response
-message HealthCheckResponse {
-  string service = 1;                    // 服务名称
-  ResultStatus status = 2;               // 健康状态
-  string message = 3;                    // 状态消息
-  base_types.Dictionary metrics = 4;     // 性能指标
-  base_types.Timestamp lastCheckTime = 5; // 最后检查时间
 }
