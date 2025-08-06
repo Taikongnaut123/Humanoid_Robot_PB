@@ -5,18 +5,8 @@ package interfaces;
 // Import the base variant types
 import "common/variant.proto";
 
-// Common result status enum
-enum ResultStatus {
-  STATUS_UNKNOWN = 0;
-  STATUS_SUCCESS = 1;
-  STATUS_FAILED = 2;
-  STATUS_TIMEOUT = 3;
-  STATUS_CANCELLED = 4;
-  STATUS_PENDING = 5;
-}
-
-// Common error information
-message ErrorInfo {
+// Common Request execute information
+message ResultStatus {
   string code = 1;        // 错误代码
   string message = 2;     // 错误消息
   string details = 3;     // 详细信息
@@ -25,131 +15,69 @@ message ErrorInfo {
 
 // Common parameter structure using Dictionary
 message Params {
-  base_types.Dictionary parameters = 1;  // 通用参数字典
-  int32 timeout = 2;                     // 超时时间（秒）
-  string correlationId = 3;              // 关联ID
+  base_types.Dictionary keyValueList = 1;  // 通用参数字典
 }
 
 // =============================================================================
 // Unified Operations (gRPC supports both sync/async automatically)
 // =============================================================================
 
-// Create Request
-message CreateRequest {
-  base_types.Dictionary requestData = 1;  // 创建请求数据
-  Params params = 2;                      // 附加参数
-}
-
-// Create Response
-message CreateResponse {
-  ResultStatus status = 1;                // 操作状态
-  string message = 2;                     // 响应消息
-  base_types.Dictionary responseData = 3; // 创建结果数据
-  ErrorInfo error = 4;                    // 错误信息（如果有）
-  string resourceId = 5;                  // 创建的资源ID
-}
-
 // Send Request
 message SendRequest {
-  string targetId = 1;                    // 目标ID
-  base_types.Dictionary messageData = 2;  // 发送的消息数据
-  Params params = 3;                      // 附加参数
+  base_types.Dictionary input = 1;  // 创建请求数据
+  base_types.Dictionary params = 2;                      // 附加参数
 }
 
 // Send Response
 message SendResponse {
-  ResultStatus status = 1;                // 发送状态
-  string message = 2;                     // 响应消息
-  base_types.Dictionary responseData = 3; // 发送结果数据
-  ErrorInfo error = 4;                    // 错误信息（如果有）
-  string messageId = 5;                   // 消息ID
-}
-
-// Delete Request
-message DeleteRequest {
-  string resourceId = 1;                  // 要删除的资源ID
-  base_types.Dictionary deleteData = 2;   // 删除相关数据
-  Params params = 3;                      // 附加参数
-}
-
-// Delete Response
-message DeleteResponse {
-  ResultStatus status = 1;                // 删除状态
-  string message = 2;                     // 响应消息
-  base_types.Dictionary responseData = 3; // 删除结果数据
-  ErrorInfo error = 4;                    // 错误信息（如果有）
+  base_types.Dictionary output = 1; // Action操作信息
+  ResultStatus ret = 2;                    // 返回码
 }
 
 // Subscribe Request
 message SubscribeRequest {
-  string topicId = 1;                     // 订阅主题ID
-  base_types.Dictionary subscribeData = 2; // 订阅相关数据
-  Params params = 3;                      // 附加参数
-  string callbackUrl = 4;                 // 回调地址（用于HTTP回调，可选）
-  string objectId = 5;                    // 对象ID（用户自定义标识）
-  string clientEndpoint = 6;              // 客户端gRPC服务端点（用于gRPC回调）
-  bool persistentSubscription = 7;        // 是否为持久订阅
-  int32 heartbeatInterval = 8;            // 心跳间隔（秒）
-  repeated string eventTypes = 9;         // 订阅的事件类型
+  base_types.Dictionary input = 1;  // 创建请求数据
+  base_types.Dictionary params = 2;                      // 附加参数
 }
 
 // Subscribe Response
 message SubscribeResponse {
-  ResultStatus status = 1;                // 订阅状态
-  string message = 2;                     // 响应消息
-  string subscriptionId = 3;              // 订阅ID
-  base_types.Dictionary responseData = 4; // 订阅结果数据
-  ErrorInfo error = 5;                    // 错误信息（如果有）
+  base_types.Dictionary output = 1; // Action操作信息
+  ResultStatus ret = 2;                    // 返回码
 }
 
 // Unsubscribe Request
 message UnsubscribeRequest {
-  string subscriptionId = 1;              // 订阅ID
-  base_types.Dictionary unsubscribeData = 2; // 取消订阅相关数据
-  Params params = 3;                      // 附加参数
+  base_types.Dictionary input = 1;  // 创建请求数据
+  base_types.Dictionary params = 2;                      // 附加参数
 }
 
 // Unsubscribe Response
 message UnsubscribeResponse {
-  ResultStatus status = 1;                // 取消订阅状态
-  string message = 2;                     // 响应消息
-  base_types.Dictionary responseData = 3; // 取消订阅结果数据
-  ErrorInfo error = 4;                    // 错误信息（如果有）
+  base_types.Dictionary output = 1; // Action操作信息
+  ResultStatus ret = 2;                    // 返回码
 }
 
 // Action Request
 message ActionRequest {
   base_types.Dictionary input = 1; // Action操作信息
-  Params params = 2;                      // 附加参数
+  base_types.Dictionary params = 2;                      // 附加参数
 }
 
 // Action Response
 message ActionResponse {
   base_types.Dictionary output = 1; // Action操作信息
-  int32 ret = 2;                    // 返回码
+  ResultStatus ret = 2;                    // 返回码
 }
-
-// =============================================================================
-// Query Operations
-// =============================================================================
 
 // Query Request
 message QueryRequest {
-  string queryId = 1;                    // 查询ID
-  base_types.Dictionary queryConditions = 2; // 查询条件
-  Params params = 3;                     // 附加参数
-  int32 limit = 4;                       // 查询限制数量
-  int32 offset = 5;                      // 查询偏移量
-  repeated string sortFields = 6;        // 排序字段
+  base_types.Dictionary input = 1;  // 创建请求数据
+  base_types.Dictionary params = 2;                      // 附加参数
 }
 
 // Query Response
 message QueryResponse {
-  string queryId = 1;                    // 查询ID
-  ResultStatus status = 2;               // 查询状态
-  repeated base_types.Dictionary results = 3; // 查询结果
-  int32 totalCount = 4;                  // 总数量
-  bool hasMore = 5;                      // 是否有更多数据
-  ErrorInfo error = 6;                   // 错误信息（如果有）
-  string nextPageToken = 7;              // 下一页标记
+  base_types.Dictionary output = 1; // Action操作信息
+  ResultStatus ret = 2;                    // 返回码
 }

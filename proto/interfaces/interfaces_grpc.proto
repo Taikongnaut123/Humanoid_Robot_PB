@@ -11,9 +11,7 @@ import "interfaces/interfaces_request_response.proto";
 
 service InterfaceService {
   // Basic CRUD operations (gRPC automatically supports sync/async)
-  rpc Create(CreateRequest) returns (CreateResponse);
   rpc Send(SendRequest) returns (SendResponse);
-  rpc Delete(DeleteRequest) returns (DeleteResponse);
   rpc Action(ActionRequest) returns (stream ActionResponse);
   rpc Subscribe(SubscribeRequest) returns (SubscribeResponse);
   rpc Unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
