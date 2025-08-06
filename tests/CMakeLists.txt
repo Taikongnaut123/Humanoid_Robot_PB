@@ -40,12 +40,8 @@ link_directories(
     ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-linux/lib
 )
 
-
 # 收集所有测试源文件
 file(GLOB TEST_SOURCES "*.cpp")
-
-# 初始化测试目标列表
-set(TEST_TARGETS "")
 
 # 为每个测试文件创建可执行文件
 foreach(TEST_SOURCE ${TEST_SOURCES})
@@ -75,11 +71,11 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
         
     elseif(TEST_NAME MATCHES ".*interfaces.*")
         target_link_libraries(${TEST_NAME}
-            protobuf::libprotobuf
-            gRPC::grpc++
             libinterfacesPB
             libcommonPB
             libPBUtils
+            protobuf::libprotobuf
+            gRPC::grpc++
         )
         add_dependencies(${TEST_NAME} libinterfacesPB libcommonPB libPBUtils)
         message(STATUS "Created interfaces test: ${TEST_NAME}")
@@ -99,9 +95,7 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
         message(STATUS "Created general test: ${TEST_NAME}")
     endif()
     
-    # 添加到测试目标列表
-    list(APPEND TEST_TARGETS ${TEST_NAME})
-    # 添加到CTest测试
+    # 添加到测试列表
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 endforeach()
 
