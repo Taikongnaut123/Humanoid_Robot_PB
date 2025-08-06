@@ -17,3 +17,6 @@
 ！cmake/
 !cmake/**
 !*.md
+!utils/
+!utils/**
+!utils/CMakeLists.txt

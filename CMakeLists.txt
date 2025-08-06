@@ -155,3 +155,12 @@ if(BUILD_PB_TESTS)
     message(STATUS "Adding PB tests subdirectory...")
     add_subdirectory(tests)
 endif()
+
+# 添加PB工具编译选项
+option(BUILD_PB_UTILS "Build PB utils" ON)
+
+# 如果启用工具，添加 utils 子目录
+if(BUILD_PB_UTILS)
+    message(STATUS "Adding PB utils subdirectory...")
+    add_subdirectory(utils)
+endif()

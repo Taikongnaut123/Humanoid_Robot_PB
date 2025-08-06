@@ -21,14 +21,17 @@ message(STATUS "PB Tests output directory: ${OUTPUT_BIN_DIR}")
 
 # 查找依赖
 find_package(PkgConfig REQUIRED)
-find_package(Protobuf REQUIRED)
-find_package(gRPC REQUIRED)
+find_package(Protobuf CONFIG REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
+
+message(STATUS "PB utils include directory: ${PB_UTILS_INCLUDE_DIR}")
 
 # 设置包含目录
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
     ${Protobuf_INCLUDE_DIRS}
     ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-linux/include
+    ${PB_UTILS_INCLUDE_DIR}
 )
 
 # 设置库搜索路径
@@ -37,8 +40,12 @@ link_directories(
     ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-linux/lib
 )
 
+
 # 收集所有测试源文件
 file(GLOB TEST_SOURCES "*.cpp")
+
+# 初始化测试目标列表
+set(TEST_TARGETS "")
 
 # 为每个测试文件创建可执行文件
 foreach(TEST_SOURCE ${TEST_SOURCES})
@@ -56,41 +63,25 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
     )
     
     # 根据测试名称链接对应的库
-    if(TEST_NAME MATCHES ".*detection.*")
-        target_link_libraries(${TEST_NAME}
-            libdetectionPB
-            protobuf::libprotobuf
-            gRPC::grpc++
-        )
-        add_dependencies(${TEST_NAME} libdetectionPB)
-        message(STATUS "Created detection test: ${TEST_NAME}")
-        
-    elseif(TEST_NAME MATCHES ".*perception.*")
-        target_link_libraries(${TEST_NAME}
-            libperceptionPB
-            protobuf::libprotobuf
-            gRPC::grpc++
-        )
-        add_dependencies(${TEST_NAME} libperceptionPB)
-        message(STATUS "Created perception test: ${TEST_NAME}")
-        
-    elseif(TEST_NAME MATCHES ".*common.*")
+    if(TEST_NAME MATCHES ".*common.*")
         target_link_libraries(${TEST_NAME}
             libcommonPB
+            libPBUtils
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libcommonPB)
+        add_dependencies(${TEST_NAME} libcommonPB libPBUtils)
         message(STATUS "Created common test: ${TEST_NAME}")
         
     elseif(TEST_NAME MATCHES ".*interfaces.*")
         target_link_libraries(${TEST_NAME}
-            libinterfacesPB
-            libcommonPB
             protobuf::libprotobuf
             gRPC::grpc++
+            libinterfacesPB
+            libcommonPB
+            libPBUtils
         )
-        add_dependencies(${TEST_NAME} libinterfacesPB libcommonPB)
+        add_dependencies(${TEST_NAME} libinterfacesPB libcommonPB libPBUtils)
         message(STATUS "Created interfaces test: ${TEST_NAME}")
         
     else()
@@ -100,14 +91,17 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
             libperceptionPB
             libcommonPB
             libinterfacesPB
+            libPBUtils
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libdetectionPB libperceptionPB libcommonPB libinterfacesPB)
+        add_dependencies(${TEST_NAME} libdetectionPB libperceptionPB libcommonPB libinterfacesPB libPBUtils)
         message(STATUS "Created general test: ${TEST_NAME}")
     endif()
     
-    # 添加到测试列表
+    # 添加到测试目标列表
+    list(APPEND TEST_TARGETS ${TEST_NAME})
+    # 添加到CTest测试
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 endforeach()
 
