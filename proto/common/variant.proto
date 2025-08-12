@@ -72,14 +72,6 @@ message StringArray {
   repeated string values = 1;
 }
 
-message DateArray {
-  repeated Date values = 1;
-}
-
-message TimestampArray {
-  repeated Timestamp values = 1;
-}
-
 // Dictionary for key-value storage
 message Dictionary {
   map<string, Variant> keyValueList = 1;        // 数据字典
@@ -124,8 +116,6 @@ message Variant {
     KCharArrayValue = 32;
     KByteArrayValue = 33;
     KStringArrayValue = 34;
-    KDateArrayValue = 35;
-    KTimestampArrayValue = 36;
   }
   
   Type type = 1;  // Explicit type field for runtime checking
@@ -166,7 +156,5 @@ message Variant {
     CharArray charArrayValue = 32;
     ByteArray byteArrayValue = 33;
     StringArray stringArrayValue = 34;
-    DateArray dateArrayValue = 35;
-    TimestampArray timestampArrayValue = 36;
   }
 }
