@@ -4,6 +4,7 @@
 #include <map>
 #include <cmath>
 #include "../include/common/variant.pb.h"
+using namespace humanoid_robot::PB::common;
 
 // 简单的测试函数
 template <typename T>
@@ -26,11 +27,11 @@ void test_basic_types()
 
     // 测试 Int32 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KInt32Value);
+        Variant variant;
+        variant.set_type(Variant::KInt32Value);
         variant.set_int32value(12345);
 
-        print_test_result("Variant Int32 type", static_cast<int>(base_types::Variant::KInt32Value),
+        print_test_result("Variant Int32 type", static_cast<int>(Variant::KInt32Value),
                           static_cast<int>(variant.type()));
         print_test_result("Variant Int32 value", 12345, variant.int32value());
         print_test_result("Variant has int32value", true, variant.has_int32value());
@@ -38,11 +39,11 @@ void test_basic_types()
 
     // 测试 Int64 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KInt64Value);
+        Variant variant;
+        variant.set_type(Variant::KInt64Value);
         variant.set_int64value(1234567890123LL);
 
-        print_test_result("Variant Int64 type", static_cast<int>(base_types::Variant::KInt64Value),
+        print_test_result("Variant Int64 type", static_cast<int>(Variant::KInt64Value),
                           static_cast<int>(variant.type()));
         print_test_result("Variant Int64 value", static_cast<int64_t>(1234567890123LL),
                           static_cast<int64_t>(variant.int64value()));
@@ -51,11 +52,11 @@ void test_basic_types()
 
     // 测试 UInt32 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KUint32Value);
+        Variant variant;
+        variant.set_type(Variant::KUint32Value);
         variant.set_uint32value(4294967295U);
 
-        print_test_result("Variant UInt32 type", static_cast<int>(base_types::Variant::KUint32Value),
+        print_test_result("Variant UInt32 type", static_cast<int>(Variant::KUint32Value),
                           static_cast<int>(variant.type()));
         print_test_result("Variant UInt32 value", 4294967295U, variant.uint32value());
         print_test_result("Variant has uint32value", true, variant.has_uint32value());
@@ -63,11 +64,11 @@ void test_basic_types()
 
     // 测试 UInt64 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KUint64Value);
+        Variant variant;
+        variant.set_type(Variant::KUint64Value);
         variant.set_uint64value(18446744073709551615ULL);
 
-        print_test_result("Variant UInt64 type", static_cast<int>(base_types::Variant::KUint64Value),
+        print_test_result("Variant UInt64 type", static_cast<int>(Variant::KUint64Value),
                           static_cast<int>(variant.type()));
         print_test_result("Variant UInt64 value", static_cast<uint64_t>(18446744073709551615ULL),
                           static_cast<uint64_t>(variant.uint64value()));
@@ -76,11 +77,11 @@ void test_basic_types()
 
     // 测试 Float 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KFloatValue);
+        Variant variant;
+        variant.set_type(Variant::KFloatValue);
         variant.set_floatvalue(3.14159f);
 
-        print_test_result("Variant Float type", static_cast<int>(base_types::Variant::KFloatValue),
+        print_test_result("Variant Float type", static_cast<int>(Variant::KFloatValue),
                           static_cast<int>(variant.type()));
         // 浮点数比较需要容差
         bool float_match = std::abs(variant.floatvalue() - 3.14159f) < 0.00001f;
@@ -90,11 +91,11 @@ void test_basic_types()
 
     // 测试 Double 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KDoubleValue);
+        Variant variant;
+        variant.set_type(Variant::KDoubleValue);
         variant.set_doublevalue(2.718281828459045);
 
-        print_test_result("Variant Double type", static_cast<int>(base_types::Variant::KDoubleValue),
+        print_test_result("Variant Double type", static_cast<int>(Variant::KDoubleValue),
                           static_cast<int>(variant.type()));
         // 浮点数比较需要容差
         bool double_match = std::abs(variant.doublevalue() - 2.718281828459045) < 0.000000000001;
@@ -104,11 +105,11 @@ void test_basic_types()
 
     // 测试 Bool 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KBoolValue);
+        Variant variant;
+        variant.set_type(Variant::KBoolValue);
         variant.set_boolvalue(true);
 
-        print_test_result("Variant Bool type", static_cast<int>(base_types::Variant::KBoolValue),
+        print_test_result("Variant Bool type", static_cast<int>(Variant::KBoolValue),
                           static_cast<int>(variant.type()));
         print_test_result("Variant Bool value", true, variant.boolvalue());
         print_test_result("Variant has boolvalue", true, variant.has_boolvalue());
@@ -116,11 +117,11 @@ void test_basic_types()
 
     // 测试 String 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KStringValue);
+        Variant variant;
+        variant.set_type(Variant::KStringValue);
         variant.set_stringvalue("Hello, Protobuf!");
 
-        print_test_result("Variant String type", static_cast<int>(base_types::Variant::KStringValue),
+        print_test_result("Variant String type", static_cast<int>(Variant::KStringValue),
                           static_cast<int>(variant.type()));
         print_test_result("Variant String value", std::string("Hello, Protobuf!"), variant.stringvalue());
         print_test_result("Variant has stringvalue", true, variant.has_stringvalue());
@@ -128,12 +129,12 @@ void test_basic_types()
 
     // 测试 Bytes 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KByteValue);
+        Variant variant;
+        variant.set_type(Variant::KByteValue);
         std::string byte_data = "binary\x00\x01\x02\x03";
         variant.set_bytevalue(byte_data);
 
-        print_test_result("Variant Byte type", static_cast<int>(base_types::Variant::KByteValue),
+        print_test_result("Variant Byte type", static_cast<int>(Variant::KByteValue),
                           static_cast<int>(variant.type()));
         print_test_result("Variant Byte value", byte_data, variant.bytevalue());
         print_test_result("Variant has bytevalue", true, variant.has_bytevalue());
@@ -147,14 +148,14 @@ void test_date_timestamp()
 
     // 测试 Date 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KDateValue);
-        base_types::Date *date = variant.mutable_datevalue();
+        Variant variant;
+        variant.set_type(Variant::KDateValue);
+        Date *date = variant.mutable_datevalue();
         date->set_year(2025);
         date->set_month(1);
         date->set_day(15);
 
-        print_test_result("Variant Date type", static_cast<int>(base_types::Variant::KDateValue),
+        print_test_result("Variant Date type", static_cast<int>(Variant::KDateValue),
                           static_cast<int>(variant.type()));
         print_test_result("Date year", 2025, variant.datevalue().year());
         print_test_result("Date month", 1, variant.datevalue().month());
@@ -164,13 +165,13 @@ void test_date_timestamp()
 
     // 测试 Timestamp 变体
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KTimestampValue);
-        base_types::Timestamp *timestamp = variant.mutable_timestampvalue();
+        Variant variant;
+        variant.set_type(Variant::KTimestampValue);
+        Timestamp *timestamp = variant.mutable_timestampvalue();
         timestamp->set_seconds(1705123456); // 示例时间戳
         timestamp->set_nanos(123456789);
 
-        print_test_result("Variant Timestamp type", static_cast<int>(base_types::Variant::KTimestampValue),
+        print_test_result("Variant Timestamp type", static_cast<int>(Variant::KTimestampValue),
                           static_cast<int>(variant.type()));
         print_test_result("Timestamp seconds", static_cast<int64_t>(1705123456),
                           static_cast<int64_t>(variant.timestampvalue().seconds()));
@@ -186,14 +187,14 @@ void test_array_types()
 
     // 测试 Int32Array
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KInt32ArrayValue);
-        base_types::Int32Array *array = variant.mutable_int32arrayvalue();
+        Variant variant;
+        variant.set_type(Variant::KInt32ArrayValue);
+        Int32Array *array = variant.mutable_int32arrayvalue();
         array->add_values(10);
         array->add_values(20);
         array->add_values(30);
 
-        print_test_result("Variant Int32Array type", static_cast<int>(base_types::Variant::KInt32ArrayValue),
+        print_test_result("Variant Int32Array type", static_cast<int>(Variant::KInt32ArrayValue),
                           static_cast<int>(variant.type()));
         print_test_result("Int32Array size", 3, variant.int32arrayvalue().values_size());
         print_test_result("Int32Array first value", 10, variant.int32arrayvalue().values(0));
@@ -204,14 +205,14 @@ void test_array_types()
 
     // 测试 StringArray
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KStringArrayValue);
-        base_types::StringArray *array = variant.mutable_stringarrayvalue();
+        Variant variant;
+        variant.set_type(Variant::KStringArrayValue);
+        StringArray *array = variant.mutable_stringarrayvalue();
         array->add_values("hello");
         array->add_values("world");
         array->add_values("protobuf");
 
-        print_test_result("Variant StringArray type", static_cast<int>(base_types::Variant::KStringArrayValue),
+        print_test_result("Variant StringArray type", static_cast<int>(Variant::KStringArrayValue),
                           static_cast<int>(variant.type()));
         print_test_result("StringArray size", 3, variant.stringarrayvalue().values_size());
         print_test_result("StringArray first value", std::string("hello"), variant.stringarrayvalue().values(0));
@@ -222,14 +223,14 @@ void test_array_types()
 
     // 测试 DoubleArray
     {
-        base_types::Variant variant;
-        variant.set_type(base_types::Variant::KDoubleArrayValue);
-        base_types::DoubleArray *array = variant.mutable_doublearrayvalue();
+        Variant variant;
+        variant.set_type(Variant::KDoubleArrayValue);
+        DoubleArray *array = variant.mutable_doublearrayvalue();
         array->add_values(1.1);
         array->add_values(2.2);
         array->add_values(3.3);
 
-        print_test_result("Variant DoubleArray type", static_cast<int>(base_types::Variant::KDoubleArrayValue),
+        print_test_result("Variant DoubleArray type", static_cast<int>(Variant::KDoubleArrayValue),
                           static_cast<int>(variant.type()));
         print_test_result("DoubleArray size", 3, variant.doublearrayvalue().values_size());
 
@@ -249,35 +250,35 @@ void test_dictionary()
 {
     print_section("Dictionary");
 
-    base_types::Variant variant;
-    variant.set_type(base_types::Variant::KDictValue);
-    base_types::Dictionary *dict = variant.mutable_dictvalue();
+    Variant variant;
+    variant.set_type(Variant::KDictValue);
+    Dictionary *dict = variant.mutable_dictvalue();
 
     // 添加 int32 值
     {
-        base_types::Variant int_var;
-        int_var.set_type(base_types::Variant::KInt32Value);
+        Variant int_var;
+        int_var.set_type(Variant::KInt32Value);
         int_var.set_int32value(42);
         (*dict->mutable_keyvaluelist())["number"] = int_var;
     }
 
     // 添加 string 值
     {
-        base_types::Variant str_var;
-        str_var.set_type(base_types::Variant::KStringValue);
+        Variant str_var;
+        str_var.set_type(Variant::KStringValue);
         str_var.set_stringvalue("hello");
         (*dict->mutable_keyvaluelist())["text"] = str_var;
     }
 
     // 添加 bool 值
     {
-        base_types::Variant bool_var;
-        bool_var.set_type(base_types::Variant::KBoolValue);
+        Variant bool_var;
+        bool_var.set_type(Variant::KBoolValue);
         bool_var.set_boolvalue(true);
         (*dict->mutable_keyvaluelist())["flag"] = bool_var;
     }
 
-    print_test_result("Variant Dictionary type", static_cast<int>(base_types::Variant::KDictValue),
+    print_test_result("Variant Dictionary type", static_cast<int>(Variant::KDictValue),
                       static_cast<int>(variant.type()));
     print_test_result("Dictionary size", 3, static_cast<int>(variant.dictvalue().keyvaluelist().size()));
 
@@ -313,8 +314,8 @@ void test_serialization()
     print_section("Serialization");
 
     // 创建一个复杂的变体进行序列化测试
-    base_types::Variant original;
-    original.set_type(base_types::Variant::KStringValue);
+    Variant original;
+    original.set_type(Variant::KStringValue);
     original.set_stringvalue("Serialization Test");
 
     // 序列化
@@ -326,13 +327,13 @@ void test_serialization()
     if (serialize_success)
     {
         // 反序列化
-        base_types::Variant deserialized;
+        Variant deserialized;
         bool deserialize_success = deserialized.ParseFromString(serialized);
         print_test_result("Deserialization success", true, deserialize_success);
 
         if (deserialize_success)
         {
-            print_test_result("Deserialized type", static_cast<int>(base_types::Variant::KStringValue),
+            print_test_result("Deserialized type", static_cast<int>(Variant::KStringValue),
                               static_cast<int>(deserialized.type()));
             print_test_result("Deserialized value", std::string("Serialization Test"),
                               deserialized.stringvalue());
@@ -346,30 +347,30 @@ void test_type_enums()
 {
     print_section("Type Enums");
 
-    print_test_result("KUnknownValue", 0, static_cast<int>(base_types::Variant::KUnknownValue));
-    print_test_result("KBoolValue", 2, static_cast<int>(base_types::Variant::KBoolValue));
-    print_test_result("KInt8Value", 3, static_cast<int>(base_types::Variant::KInt8Value));
-    print_test_result("KUint8Value", 4, static_cast<int>(base_types::Variant::KUint8Value));
-    print_test_result("KInt16Value", 5, static_cast<int>(base_types::Variant::KInt16Value));
-    print_test_result("KUint16Value", 6, static_cast<int>(base_types::Variant::KUint16Value));
-    print_test_result("KInt32Value", 7, static_cast<int>(base_types::Variant::KInt32Value));
-    print_test_result("KUint32Value", 8, static_cast<int>(base_types::Variant::KUint32Value));
-    print_test_result("KInt64Value", 9, static_cast<int>(base_types::Variant::KInt64Value));
-    print_test_result("KUint64Value", 10, static_cast<int>(base_types::Variant::KUint64Value));
-    print_test_result("KFloatValue", 11, static_cast<int>(base_types::Variant::KFloatValue));
-    print_test_result("KDoubleValue", 12, static_cast<int>(base_types::Variant::KDoubleValue));
-    print_test_result("KCharValue", 13, static_cast<int>(base_types::Variant::KCharValue));
-    print_test_result("KByteValue", 14, static_cast<int>(base_types::Variant::KByteValue));
-    print_test_result("KStringValue", 15, static_cast<int>(base_types::Variant::KStringValue));
-    print_test_result("KDateValue", 16, static_cast<int>(base_types::Variant::KDateValue));
-    print_test_result("KTimestampValue", 17, static_cast<int>(base_types::Variant::KTimestampValue));
-    print_test_result("KDictValue", 18, static_cast<int>(base_types::Variant::KDictValue));
+    print_test_result("KUnknownValue", 0, static_cast<int>(Variant::KUnknownValue));
+    print_test_result("KBoolValue", 2, static_cast<int>(Variant::KBoolValue));
+    print_test_result("KInt8Value", 3, static_cast<int>(Variant::KInt8Value));
+    print_test_result("KUint8Value", 4, static_cast<int>(Variant::KUint8Value));
+    print_test_result("KInt16Value", 5, static_cast<int>(Variant::KInt16Value));
+    print_test_result("KUint16Value", 6, static_cast<int>(Variant::KUint16Value));
+    print_test_result("KInt32Value", 7, static_cast<int>(Variant::KInt32Value));
+    print_test_result("KUint32Value", 8, static_cast<int>(Variant::KUint32Value));
+    print_test_result("KInt64Value", 9, static_cast<int>(Variant::KInt64Value));
+    print_test_result("KUint64Value", 10, static_cast<int>(Variant::KUint64Value));
+    print_test_result("KFloatValue", 11, static_cast<int>(Variant::KFloatValue));
+    print_test_result("KDoubleValue", 12, static_cast<int>(Variant::KDoubleValue));
+    print_test_result("KCharValue", 13, static_cast<int>(Variant::KCharValue));
+    print_test_result("KByteValue", 14, static_cast<int>(Variant::KByteValue));
+    print_test_result("KStringValue", 15, static_cast<int>(Variant::KStringValue));
+    print_test_result("KDateValue", 16, static_cast<int>(Variant::KDateValue));
+    print_test_result("KTimestampValue", 17, static_cast<int>(Variant::KTimestampValue));
+    print_test_result("KDictValue", 18, static_cast<int>(Variant::KDictValue));
 
     // 数组类型
-    print_test_result("KBoolArrayValue", 21, static_cast<int>(base_types::Variant::KBoolArrayValue));
-    print_test_result("KInt32ArrayValue", 26, static_cast<int>(base_types::Variant::KInt32ArrayValue));
-    print_test_result("KStringArrayValue", 34, static_cast<int>(base_types::Variant::KStringArrayValue));
-    print_test_result("KDoubleArrayValue", 31, static_cast<int>(base_types::Variant::KDoubleArrayValue));
+    print_test_result("KBoolArrayValue", 21, static_cast<int>(Variant::KBoolArrayValue));
+    print_test_result("KInt32ArrayValue", 26, static_cast<int>(Variant::KInt32ArrayValue));
+    print_test_result("KStringArrayValue", 34, static_cast<int>(Variant::KStringArrayValue));
+    print_test_result("KDoubleArrayValue", 31, static_cast<int>(Variant::KDoubleArrayValue));
 }
 
 int main()

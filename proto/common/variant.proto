@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package base_types;
+package humanoid_robot.PB.common;
 
 // Date type (YYYY-MM-DD)
 message Date {
@@ -77,6 +77,51 @@ message Dictionary {
   map<string, Variant> keyValueList = 1;        // 数据字典
 }
 
+// 检测框
+message BBox{
+  float x1 = 1;  // 左上角x
+  float y1 = 2;  // 左上角y
+  float x2 = 3;  // 右下角x
+  float y2 = 4;  // 右下角y
+}
+
+// 分割掩码mask
+message Mask {
+    int32 x = 1;
+    int32 y = 2;
+}
+
+message Image{
+    bytes timeStamp = 1;
+    bytes img = 2; 
+    bool requiresMasks = 3;
+}
+
+message PerceptionRow {
+    BBox bbox = 1;
+    repeated Mask masks = 2;
+    string trackId = 3;     // 跟踪id
+    float conf = 4;         // 检测框的置信度
+    string cls = 5;         // 检测框的类别
+    bool isMove = 6;        // 新增动态物体标记
+}
+
+message DetectionRow {
+    BBox bbox = 1;
+    string trackId = 2;     // 跟踪id
+    float conf = 3;         // 检测框的置信度
+    string cls = 4;         // 检测框的类别
+    bool isMove = 5;        // 新增动态物体标记
+}
+
+message DivisionRow {
+    string trackId = 1;     // 跟踪id
+    float conf = 2;         // 检测框的置信度
+    string cls = 3;         // 检测框的类别
+    bool isMove = 4;        // 新增动态物体标记
+    repeated Mask masks = 5;
+}
+
 // Simple and efficient Variant using oneof + type
 message Variant {
   // Type enumeration for runtime type checking (nested enum)
@@ -100,22 +145,28 @@ message Variant {
     KDateValue = 16;
     KTimestampValue = 17;
     KDictValue = 18;
-    // Reserved: 19-20 (for future basic types)
+    KImageValue = 19; // Image for Perception
+    KBBoxValue = 20; // Bounding box for Perception
+    KMaskValue = 21; // Mask for Perception
+    KPerceptionRowValue = 22; // Perception row for Perception
+    KDetectionRowValue = 23; // Detection row for Perception
+    KDivisionRowValue = 24; // Division row for Perception
+
     // Array types
-    KBoolArrayValue = 21;
-    KInt8ArrayValue = 22;
-    KUint8ArrayValue = 23;
-    KInt16ArrayValue = 24;
-    KUint16ArrayValue = 25;
-    KInt32ArrayValue = 26;
-    KUint32ArrayValue = 27;
-    KInt64ArrayValue = 28;
-    KUint64ArrayValue = 29;
-    KFloatArrayValue = 30;
-    KDoubleArrayValue = 31;
-    KCharArrayValue = 32;
-    KByteArrayValue = 33;
-    KStringArrayValue = 34;
+    KBoolArrayValue = 102;
+    KInt8ArrayValue = 103;
+    KUint8ArrayValue = 104;
+    KInt16ArrayValue = 105;
+    KUint16ArrayValue = 106;
+    KInt32ArrayValue = 107;
+    KUint32ArrayValue = 108;
+    KInt64ArrayValue = 109;
+    KUint64ArrayValue = 110;
+    KFloatArrayValue = 111;
+    KDoubleArrayValue = 112;
+    KCharArrayValue = 113;
+    KByteArrayValue = 114;
+    KStringArrayValue = 115;
   }
   
   Type type = 1;  // Explicit type field for runtime checking
@@ -139,22 +190,27 @@ message Variant {
     Date dateValue = 16;
     Timestamp timestampValue = 17;
     Dictionary dictValue = 18;
-    // Reserved: 19-20 (for future use)
-    
+    Image imageValue = 19;    // Image for Perception
+    BBox bboxValue = 20;      // Bounding box for Perception
+    Mask maskValue = 21;      // Mask for Perception
+    PerceptionRow perceptionRowValue = 22; // Perception row for Perception
+    DetectionRow detectionRowValue = 23; // Detection row for Perception
+    DivisionRow divisionRowValue = 24; // Division row for Perception
+
     // Array types
-    BoolArray boolArrayValue = 21;
-    Int8Array int8ArrayValue = 22;
-    UInt8Array uint8ArrayValue = 23;
-    Int16Array int16ArrayValue = 24;
-    UInt16Array uint16ArrayValue = 25;
-    Int32Array int32ArrayValue = 26;
-    UInt32Array uint32ArrayValue = 27;
-    Int64Array int64ArrayValue = 28;
-    UInt64Array uint64ArrayValue = 29;
-    FloatArray floatArrayValue = 30;
-    DoubleArray doubleArrayValue = 31;
-    CharArray charArrayValue = 32;
-    ByteArray byteArrayValue = 33;
-    StringArray stringArrayValue = 34;
+    BoolArray boolArrayValue = 102;
+    Int8Array int8ArrayValue = 103;
+    UInt8Array uint8ArrayValue = 104;
+    Int16Array int16ArrayValue = 105;
+    UInt16Array uint16ArrayValue = 106;
+    Int32Array int32ArrayValue = 107;
+    UInt32Array uint32ArrayValue = 108;
+    Int64Array int64ArrayValue = 109;
+    UInt64Array uint64ArrayValue = 110;
+    FloatArray floatArrayValue = 111;
+    DoubleArray doubleArrayValue = 112;
+    CharArray charArrayValue = 113;
+    ByteArray byteArrayValue = 114;
+    StringArray stringArrayValue = 115;
   }
 }

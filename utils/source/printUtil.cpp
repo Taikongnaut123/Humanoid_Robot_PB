@@ -1,51 +1,51 @@
 #include "printUtil.h"
 
 using namespace humanoid_robot::utils::PB;
-using namespace base_types;
+using namespace humanoid_robot::PB::common;
 
 #define CASE_PRINT(VARIANT_TYPE, VARIANT_FUNC)                             \
-    case base_types::Variant::K##VARIANT_TYPE##Value:                      \
+    case humanoid_robot::PB::common::Variant::K##VARIANT_TYPE##Value:      \
     {                                                                      \
         std::cout << #VARIANT_TYPE << ": " << VARIANT_FUNC() << std::endl; \
         break;                                                             \
     }
 
-#define CASE_PRINT_ARRAY(VARIANT_TYPE, VARIANT_FUNC)       \
-    case base_types::Variant::K##VARIANT_TYPE##ArrayValue: \
-    {                                                      \
-        std::cout << #VARIANT_TYPE " Array: ";             \
-        auto &array = VARIANT_FUNC();                      \
-        for (const auto &item : array)                     \
-        {                                                  \
-            std::cout << item << " ";                      \
-        }                                                  \
-        std::cout << std::endl;                            \
-        break;                                             \
+#define CASE_PRINT_ARRAY(VARIANT_TYPE, VARIANT_FUNC)                       \
+    case humanoid_robot::PB::common::Variant::K##VARIANT_TYPE##ArrayValue: \
+    {                                                                      \
+        std::cout << #VARIANT_TYPE " Array: ";                             \
+        auto &array = VARIANT_FUNC();                                      \
+        for (const auto &item : array)                                     \
+        {                                                                  \
+            std::cout << item << " ";                                      \
+        }                                                                  \
+        std::cout << std::endl;                                            \
+        break;                                                             \
     }
 
-#define CASE_PRINT_DATE(VARIANT_TYPE, VARIANT_FUNC)   \
-    case base_types::Variant::K##VARIANT_TYPE##Value: \
-    {                                                 \
-        auto &date = VARIANT_FUNC();                  \
-        std::cout << #VARIANT_TYPE << ": "            \
-                  << date.year() << "-"               \
-                  << date.month() << "-"              \
-                  << date.day() << std::endl;         \
-        break;                                        \
+#define CASE_PRINT_DATE(VARIANT_TYPE, VARIANT_FUNC)                   \
+    case humanoid_robot::PB::common::Variant::K##VARIANT_TYPE##Value: \
+    {                                                                 \
+        auto &date = VARIANT_FUNC();                                  \
+        std::cout << #VARIANT_TYPE << ": "                            \
+                  << date.year() << "-"                               \
+                  << date.month() << "-"                              \
+                  << date.day() << std::endl;                         \
+        break;                                                        \
     }
 
-#define CASE_PRINT_TIMESTAMP(VARIANT_TYPE, VARIANT_FUNC) \
-    case base_types::Variant::K##VARIANT_TYPE##Value:    \
-    {                                                    \
-        auto &timestamp = VARIANT_FUNC();                \
-        std::cout << #VARIANT_TYPE << ": "               \
-                  << timestamp.seconds() << "."          \
-                  << timestamp.nanos() << std::endl;     \
-        break;                                           \
+#define CASE_PRINT_TIMESTAMP(VARIANT_TYPE, VARIANT_FUNC)              \
+    case humanoid_robot::PB::common::Variant::K##VARIANT_TYPE##Value: \
+    {                                                                 \
+        auto &timestamp = VARIANT_FUNC();                             \
+        std::cout << #VARIANT_TYPE << ": "                            \
+                  << timestamp.seconds() << "."                       \
+                  << timestamp.nanos() << std::endl;                  \
+        break;                                                        \
     }
 
 #define CASE_PRINT_DICT(VARIANT_TYPE, VARIANT_FUNC)                    \
-    case base_types::Variant::K##VARIANT_TYPE##Value:                  \
+    case humanoid_robot::PB::common::Variant::K##VARIANT_TYPE##Value:  \
     {                                                                  \
         auto map = VARIANT_FUNC();                                     \
         std::cout << #VARIANT_TYPE << ": "                             \
@@ -61,7 +61,7 @@ using namespace base_types;
 namespace humanoid_robot::utils::PB
 {
     // 用于打印Variant的不同类型
-    void print_variant(const base_types::Variant &var)
+    void print_variant(const humanoid_robot::PB::common::Variant &var)
     {
         auto caseVal = var.value_case();
         std::cout << "Variant case: " << caseVal << std::endl;
@@ -104,7 +104,7 @@ namespace humanoid_robot::utils::PB
         }
     }
 
-    void print_keyvaluelist(const ::google::protobuf::Map<std::string, ::base_types::Variant> &keyvaluelist)
+    void print_keyvaluelist(const ::google::protobuf::Map<std::string, ::humanoid_robot::PB::common::Variant> &keyvaluelist)
     {
         for (const auto &pair : keyvaluelist)
         {

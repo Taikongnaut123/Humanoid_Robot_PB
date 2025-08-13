@@ -1,8 +1,9 @@
 syntax = "proto3";
 
-package imageprocessing;
+package Humanoid.PB.perception;
 
-service ImageProcessing {
+service ImageProcessing{
+
     // define the process of taking in image(s) from navigation system 
     // and sending out masks to downstream system
     
@@ -20,36 +21,53 @@ service ImageProcessing {
     // a unified implementation of both continuousTrack and continuousMask
 }
 
-
-message Img {
+message Img{
     bytes timeStamp = 1;
     bytes img = 2; 
     bool requiresMasks = 3;
 }
 
-message Tracks {
+message Tracks{
     bytes timeStamp = 1;
     bytes tracks = 2;
     // return type with no mask  
 }
 
-message MasksTracks {
+message MasksTracks{
+    // 对应图片帧时间戳
     bytes timeStamp = 1;
+
+    // 总体感知结果
     repeated TrackRow tracks = 2;
 }
 
 message TrackRow {
+    // 检测框bbox 左上角x, 左上角y, 右下角x, 右下角y
     float x1 = 1;
     float y1 = 2;
     float x2 = 3;
     float y2 = 4;
+
+    // 跟踪id
     string trackId = 5;
+
+    // 检测框的置信度
     float conf = 6;
+
+    // 检测框的类别
     string cls = 7;
+
+    // 分割掩码mask
     repeated Masks mask = 8;
+
+    // 新增动态物体标记
+    bool isMove = 9;
 }
 
 message Masks {
     int32 x = 1;
     int32 y = 2;
 }
+
+
+

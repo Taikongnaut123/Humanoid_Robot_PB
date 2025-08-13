@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package humanoid_robot.PB.perception;
+// Import the base variant types and request/response messages
+import "common/variant.proto";
+import "perception/perception_request_response.proto";
+
+service PerceptionService {
+    // 获取感知结果
+    rpc GetPerceptionResult(humanoid_robot.PB.common.Image) returns (Perception);
+    
+    // 获取检测结果
+    rpc GetDetectionResult(humanoid_robot.PB.common.Image) returns (Detection);
+    
+    // 获取分割结果
+    rpc GetDivisionResult(humanoid_robot.PB.common.Image) returns (Division);
+}

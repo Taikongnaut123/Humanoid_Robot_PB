@@ -1,6 +1,7 @@
 syntax = "proto3";
 
-package interfaces;
+
+package humanoid_robot.PB.interfaces;
 
 // Import the request/response message definitions
 import "interfaces/interfaces_request_response.proto";
@@ -11,7 +12,7 @@ import "interfaces/interfaces_request_response.proto";
 
 service InterfaceService {
   // Basic CRUD operations (gRPC automatically supports sync/async)
-  rpc Send(SendRequest) returns (SendResponse);
+  rpc Send(stream SendRequest) returns (stream SendResponse);
   rpc Action(ActionRequest) returns (stream ActionResponse);
   rpc Subscribe(SubscribeRequest) returns (SubscribeResponse);
   rpc Unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);

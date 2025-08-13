@@ -4,8 +4,9 @@
 #include "../include/interfaces/interfaces_request_response.pb.h"
 #include "../include/interfaces/interfaces_grpc.grpc.pb.h"
 #include "printUtil.h"
-using namespace base_types;
+using namespace humanoid_robot::PB::interfaces;
 using namespace humanoid_robot::utils::PB;
+using namespace humanoid_robot::PB::common;
 
 // 测试基本请求响应类型
 void test_request_response_types()
@@ -14,19 +15,19 @@ void test_request_response_types()
 
     // 测试 SendRequest
     {
-        interfaces::SendRequest request;
+        humanoid_robot::PB::interfaces::SendRequest request;
 
         // 设置请求数据
         auto input = request.mutable_input()->mutable_keyvaluelist();
         {
             // 设置输入数据
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_int16value(10001);
             input->insert(std::make_pair("type", var));
         }
         {
             // 设置输入数据
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_stringvalue("test_resource");
             input->insert(std::make_pair("resource_name", var));
         }
@@ -35,13 +36,13 @@ void test_request_response_types()
         auto params = request.mutable_params()->mutable_keyvaluelist();
         {
             // 设置参数内容
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_int32value(500);
             params->insert(std::make_pair("timeout", var));
         }
         {
             // 设置参数内容
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_int32value(42);
             params->insert(std::make_pair("correlationid", var));
         }
@@ -51,37 +52,37 @@ void test_request_response_types()
 
     // 测试 SendResponse
     {
-        interfaces::SendResponse response;
+        humanoid_robot::PB::interfaces::SendResponse response;
 
         auto output = response.mutable_output()->mutable_keyvaluelist();
         {
             // 设置输出数据
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_stringvalue("Resource created successfully");
             output->insert(std::make_pair("message", var));
         }
         {
             // 设置输出数据
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_int32value(123);
             output->insert(std::make_pair("resourceid", var));
         }
         {
-            Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_boolvalue(true);
             output->insert(std::make_pair("status", var));
         }
 
         {
-            Variant var;
+            humanoid_robot::PB::common::Variant var;
             auto map = var.mutable_dictvalue()->mutable_keyvaluelist();
             {
-                Variant var_;
+                humanoid_robot::PB::common::Variant var_;
                 var_.set_stringvalue("2023-10-10");
                 map->insert(std::make_pair("date", var_));
             }
             {
-                Variant var_;
+                humanoid_robot::PB::common::Variant var_;
                 var_.set_stringvalue("12:00:00");
                 map->insert(std::make_pair("time", var_));
             }
@@ -96,7 +97,7 @@ void test_error_info()
 {
     print_section("Error Info");
 
-    interfaces::ResultStatus error;
+    humanoid_robot::PB::interfaces::ResultStatus error;
     error.set_code("ERR_001");
     error.set_message("Sample error message");
     error.set_details("Detailed error information");
@@ -113,7 +114,7 @@ void test_error_info()
 void test_serialization()
 {
     print_section("Serialization");
-    interfaces::SendRequest request;
+    humanoid_robot::PB::interfaces::SendRequest request;
 
     // 创建一个复杂的请求进行序列化测试
     {
@@ -121,13 +122,13 @@ void test_serialization()
         auto input = request.mutable_input()->mutable_keyvaluelist();
         {
             // 设置输入数据
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_int16value(10001);
             input->insert(std::make_pair("type", var));
         }
         {
             // 设置输入数据
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_stringvalue("test_resource");
             input->insert(std::make_pair("resource_name", var));
         }
@@ -136,13 +137,13 @@ void test_serialization()
         auto params = request.mutable_params()->mutable_keyvaluelist();
         {
             // 设置参数内容
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_int32value(500);
             params->insert(std::make_pair("timeout", var));
         }
         {
             // 设置参数内容
-            base_types::Variant var;
+            humanoid_robot::PB::common::Variant var;
             var.set_int32value(42);
             params->insert(std::make_pair("correlationid", var));
         }
@@ -159,7 +160,7 @@ void test_serialization()
     if (serialize_success)
     {
         // 反序列化
-        interfaces::SendRequest deserialized;
+        humanoid_robot::PB::interfaces::SendRequest deserialized;
         bool deserialize_success = deserialized.ParseFromString(serialized);
         print_test_result("Deserialization success", true, deserialize_success);
 

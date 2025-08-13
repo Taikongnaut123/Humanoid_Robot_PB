@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package humanoid_robot.PB.perception;
+
+// Import the base variant types and request/response messages
+import "common/variant.proto";
+
+// ================================= Perception 感知整体结果============================================
+message PerceptionRequest {
+    humanoid_robot.PB.common.Image image = 1; // 输入图像
+    bool requiresMasks = 2; // 是否需要掩码
+}
+
+message Perception{
+    bytes timeStamp = 1; // 时间戳
+    repeated  humanoid_robot.PB.common.PerceptionRow rows = 2; // 感知结果行
+}
+
+message PerceptionResponse {
+    Perception perception = 1; // 感知结果
+    int32 ret = 2; // 返回码
+}
+
+// ================================== Detection 检测结果===========================================
+
+message DetectionRequest {
+    humanoid_robot.PB.common.Image image = 1; // 输入图像
+}
+
+message Detection {
+    bytes timeStamp = 1; // 时间戳
+    repeated humanoid_robot.PB.common.DetectionRow rows = 2; // 检测结果行
+}
+
+message DetectionResponse {
+    Detection detection = 1; // 检测结果
+    int32 ret = 2; // 返回码
+}
+
+// ==================================== Division 分割结果=========================================
+
+message DivisionRequest {
+    humanoid_robot.PB.common.Image image = 1; // 输入图像
+}
+
+message Division {
+    bytes timeStamp = 1; // 时间戳
+    repeated humanoid_robot.PB.common.DivisionRow rows = 2; // 分割结果行
+}   
+
+message DivisionResponse {
+    Division division = 1; // 分割结果
+    int32 ret = 2; // 返回码
+}
+
+enum CommandCode {
+    UNKNOWN = 0; // 未知命令
+    GET_PERCEPTION_RESULT = 20001; // 获取感知结果
+    GET_DETECTION_RESULT = 20002; // 获取检测结果
+    GET_DIVISION_RESULT = 20003; // 获取分割结果
+}

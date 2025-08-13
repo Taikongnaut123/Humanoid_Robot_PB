@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package interfaces;
+package humanoid_robot.PB.interfaces;
 
 // Import the base variant types
 import "common/variant.proto";
@@ -15,7 +15,7 @@ message ResultStatus {
 
 // Common parameter structure using Dictionary
 message Params {
-  base_types.Dictionary keyValueList = 1;  // 通用参数字典
+  humanoid_robot.PB.common.Dictionary keyValueList = 1;  // 通用参数字典
 }
 
 // =============================================================================
@@ -24,60 +24,60 @@ message Params {
 
 // Send Request
 message SendRequest {
-  base_types.Dictionary input = 1;  // 创建请求数据
-  base_types.Dictionary params = 2;                      // 附加参数
+  humanoid_robot.PB.common.Dictionary input = 1;  // 创建请求数据
+  humanoid_robot.PB.common.Dictionary params = 2;                      // 附加参数
 }
 
 // Send Response
 message SendResponse {
-  base_types.Dictionary output = 1; // Action操作信息
+  humanoid_robot.PB.common.Dictionary output = 1; // Action操作信息
   ResultStatus ret = 2;                    // 返回码
 }
 
 // Subscribe Request
 message SubscribeRequest {
-  base_types.Dictionary input = 1;  // 创建请求数据
-  base_types.Dictionary params = 2;                      // 附加参数
+  humanoid_robot.PB.common.Dictionary input = 1;  // 创建请求数据
+  humanoid_robot.PB.common.Dictionary params = 2;                      // 附加参数
 }
 
 // Subscribe Response
 message SubscribeResponse {
-  base_types.Dictionary output = 1; // Action操作信息
+  humanoid_robot.PB.common.Dictionary output = 1; // Action操作信息
   ResultStatus ret = 2;                    // 返回码
 }
 
 // Unsubscribe Request
 message UnsubscribeRequest {
-  base_types.Dictionary input = 1;  // 创建请求数据
-  base_types.Dictionary params = 2;                      // 附加参数
+  humanoid_robot.PB.common.Dictionary input = 1;  // 创建请求数据
+  humanoid_robot.PB.common.Dictionary params = 2;                      // 附加参数
 }
 
 // Unsubscribe Response
 message UnsubscribeResponse {
-  base_types.Dictionary output = 1; // Action操作信息
+  humanoid_robot.PB.common.Dictionary output = 1; // Action操作信息
   ResultStatus ret = 2;                    // 返回码
 }
 
 // Action Request
 message ActionRequest {
-  base_types.Dictionary input = 1; // Action操作信息
-  base_types.Dictionary params = 2;                      // 附加参数
+  humanoid_robot.PB.common.Dictionary input = 1; // Action操作信息
+  humanoid_robot.PB.common.Dictionary params = 2;                      // 附加参数
 }
 
 // Action Response
 message ActionResponse {
-  base_types.Dictionary output = 1; // Action操作信息
+  humanoid_robot.PB.common.Dictionary output = 1; // Action操作信息
   ResultStatus ret = 2;                    // 返回码
 }
 
 // Query Request
 message QueryRequest {
-  base_types.Dictionary input = 1;  // 创建请求数据
-  base_types.Dictionary params = 2;                      // 附加参数
+  humanoid_robot.PB.common.Dictionary input = 1;  // 创建请求数据
+  humanoid_robot.PB.common.Dictionary params = 2;                      // 附加参数
 }
 
 // Query Response
 message QueryResponse {
-  base_types.Dictionary output = 1; // Action操作信息
+  humanoid_robot.PB.common.Dictionary output = 1; // Action操作信息
   ResultStatus ret = 2;                    // 返回码
 }

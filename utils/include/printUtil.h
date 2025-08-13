@@ -13,9 +13,9 @@ namespace humanoid_robot
         namespace PB
         {
 
-            void print_variant(const base_types::Variant &var);
+            void print_variant(const humanoid_robot::PB::common::Variant &var);
 
-            void print_keyvaluelist(const ::google::protobuf::Map<std::string, ::base_types::Variant> &keyvaluelist);
+            void print_keyvaluelist(const ::google::protobuf::Map<std::string, ::humanoid_robot::PB::common::Variant> &keyvaluelist);
 
             void print_section(const std::string &section_name);
 
