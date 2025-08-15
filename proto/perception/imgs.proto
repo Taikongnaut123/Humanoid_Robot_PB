@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package Humanoid.PB.perception;
+package humanoid_robot.PB.perception;
 
 service ImageProcessing{
 

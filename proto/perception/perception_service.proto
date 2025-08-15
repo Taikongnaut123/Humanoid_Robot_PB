@@ -7,7 +7,7 @@ import "perception/perception_request_response.proto";
 
 service PerceptionService {
     // 获取感知结果
-    rpc GetPerceptionResult(humanoid_robot.PB.common.Image) returns (Perception);
+    rpc GetPerceptionResult(stream humanoid_robot.PB.common.Image) returns (stream Perception);
     
     // 获取检测结果
     rpc GetDetectionResult(humanoid_robot.PB.common.Image) returns (Detection);

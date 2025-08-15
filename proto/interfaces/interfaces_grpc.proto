@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-
 package humanoid_robot.PB.interfaces;
 
 // Import the request/response message definitions
