@@ -122,7 +122,7 @@ message DivisionRow {
     repeated Mask masks = 5;
 }
 
-// Simple and efficient Variant using oneof + type
+// Simple and efficient Variant using oneof (type field removed — use value_case() to detect)
 message Variant {
   // Type enumeration for runtime type checking (nested enum)
   enum Type {
@@ -168,9 +168,9 @@ message Variant {
     KByteArrayValue = 114;
     KStringArrayValue = 115;
   }
-  
-  Type type = 1;  // Explicit type field for runtime checking
-  
+
+  // NOTE: explicit 'type' field removed. Use value_case() or oneof checks at runtime.
+
   oneof value {
     // Basic types
     bool boolValue = 2;
