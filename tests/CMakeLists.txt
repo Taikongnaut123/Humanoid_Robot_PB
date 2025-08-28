@@ -26,30 +26,27 @@ find_package(gRPC CONFIG REQUIRED)
 
 message(STATUS "PB utils include directory: ${PB_UTILS_INCLUDE_DIR}")
 
-# 设置包含目录
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/../include
-    ${Protobuf_INCLUDE_DIRS}
-    ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-linux/include
-    ${PB_UTILS_INCLUDE_DIR}
-)
-
-# 设置库搜索路径
-link_directories(
-    ${OUTPUT_LIB_DIR}
-    ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-linux/lib
-)
+# 启用测试
+enable_testing()
 
 # 收集所有测试源文件
 file(GLOB TEST_SOURCES "*.cpp")
+
+# 创建测试目标列表
+set(TEST_TARGETS)
 
 # 为每个测试文件创建可执行文件
 foreach(TEST_SOURCE ${TEST_SOURCES})
     # 获取文件名（不含扩展名）
     get_filename_component(TEST_NAME ${TEST_SOURCE} NAME_WE)
     
+    set(TEST_NAME "CHRIC_PB${TEST_NAME}")
+
     # 创建测试可执行文件
     add_executable(${TEST_NAME} ${TEST_SOURCE})
+    
+    # 添加到测试目标列表
+    list(APPEND TEST_TARGETS ${TEST_NAME})
     
     # 设置编译属性
     set_target_properties(${TEST_NAME} PROPERTIES
@@ -58,40 +55,43 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
         RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}
     )
     
+    # 设置包含目录
+    target_include_directories(${TEST_NAME} PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/../include
+        ${PB_UTILS_INCLUDE_DIR}
+    )
+    
     # 根据测试名称链接对应的库
     if(TEST_NAME MATCHES ".*common.*")
-        target_link_libraries(${TEST_NAME}
+        target_link_libraries(${TEST_NAME} PRIVATE
             libcommonPB
-            libPBUtils
+            CHRIC_PBUtils
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libcommonPB libPBUtils)
         message(STATUS "Created common test: ${TEST_NAME}")
         
     elseif(TEST_NAME MATCHES ".*interfaces.*")
-        target_link_libraries(${TEST_NAME}
+        target_link_libraries(${TEST_NAME} PRIVATE
             libinterfacesPB
             libcommonPB
-            libPBUtils
+            CHRIC_PBUtils
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libinterfacesPB libcommonPB libPBUtils)
         message(STATUS "Created interfaces test: ${TEST_NAME}")
         
     else()
         # 通用测试，链接所有库
-        target_link_libraries(${TEST_NAME}
+        target_link_libraries(${TEST_NAME} PRIVATE
             libdetectionPB
             libperceptionPB
             libcommonPB
             libinterfacesPB
-            libPBUtils
+            CHRIC_PBUtils
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        add_dependencies(${TEST_NAME} libdetectionPB libperceptionPB libcommonPB libinterfacesPB libPBUtils)
         message(STATUS "Created general test: ${TEST_NAME}")
     endif()
     

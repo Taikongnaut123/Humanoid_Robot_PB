@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 project(PB
-  VERSION 1.0
+  VERSION 1.0.0.0
   DESCRIPTION "Protocol Buffer components"
   LANGUAGES CXX)
 
@@ -12,9 +12,12 @@ find_package(protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 
 # 设置输出目录
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_LIB_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_LIB_DIR})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR})
+
+option(INSTALL_PB_HEADERS "Install PB header files" OFF)
+option(INSTALL_PB_LIBS "Install PB library files" OFF)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}) # 动态库输出目录
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}) # 静态库输出目录
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}) # 可执行文件输出目录
 
 # 自动发现source目录下的所有子模块
 file(GLOB SUBMODULES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/source" "${CMAKE_CURRENT_SOURCE_DIR}/source/*")
@@ -66,17 +69,16 @@ foreach(SUBMODULE ${SUBMODULES})
                 SOVERSION ${PROJECT_VERSION_MAJOR}
                 POSITION_INDEPENDENT_CODE ON
                 EXPORT_NAME ${SUBMODULE}PB  # 导出时使用子模块名+PB
+                RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}
             )
             
             # 添加包含目录
             target_include_directories(${LIBRARY_NAME} 
                 PUBLIC 
-                    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                    $<BUILD_INTERFACE:${SUBMODULE_INCLUDE_DIR}>
-                    $<INSTALL_INTERFACE:include>
-                PRIVATE
-                    ${CMAKE_CURRENT_SOURCE_DIR}/include
-                    ${SUBMODULE_INCLUDE_DIR}
+                    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include># 源码树中头文件位于 ${CMAKE_CURRENT_SOURCE_DIR}/include    
+                    $<BUILD_INTERFACE:${SUBMODULE_INCLUDE_DIR}># 源码树中子模块头文件位于 ${SUBMODULE_INCLUDE_DIR}
+                PUBLIC
+                    $<INSTALL_INTERFACE:include/${SUBMODULE}># 安装时头文件将被放到 ${CMAKE_INSTALL_PREFIX}/include/${SUBMODULE}
             )
             
             # 链接protobuf和grpc库 (vcpkg版本)
@@ -85,6 +87,7 @@ foreach(SUBMODULE ${SUBMODULES})
                     protobuf::libprotobuf
                     gRPC::grpc++
                     gRPC::grpc++_reflection
+
             )
             
             # 添加编译定义
@@ -99,18 +102,46 @@ foreach(SUBMODULE ${SUBMODULES})
                 PRIVATE
                     $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra>
             )
-            
-            # 安装目标
+ 
+            if(INSTALL_PB_LIBS)           
+                # 安装库文件
+                install(TARGETS ${LIBRARY_NAME}
+                    EXPORT PB-targets
+                    LIBRARY DESTINATION ${OUTPUT_LIB_DIR} # 共享库(.so)安装路径
+                    ARCHIVE DESTINATION ${OUTPUT_LIB_DIR} # 静态库(.a)安装路径
+                    RUNTIME DESTINATION ${OUTPUT_BIN_DIR} # 可执行文件安装路径
+                )
+            endif()
+
+            # 安装库文件到端和云
             install(TARGETS ${LIBRARY_NAME}
-                EXPORT PB-targets
-                LIBRARY DESTINATION ${OUTPUT_LIB_DIR}
-                ARCHIVE DESTINATION ${OUTPUT_LIB_DIR}
-                RUNTIME DESTINATION ${OUTPUT_BIN_DIR}
+                LIBRARY DESTINATION ${CHRIC_TERMINAL_FOLDER} # 共享库(.so)安装路径
             )
+
+            # 安装库文件到端和云
+            install(TARGETS ${LIBRARY_NAME}
+                LIBRARY DESTINATION ${CHRIC_CLOUD_FOLDER} # 共享库(.so)安装路径
+            )
+
+            if(INSTALL_PB_HEADERS)
+                # 安装头文件
+                install(DIRECTORY ${SUBMODULE_INCLUDE_DIR}/
+                    DESTINATION ${OUTPUT_INCLUDE_DIR}/PB/${SUBMODULE}
+                    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+                )
+            endif()
             
+
             # 安装头文件
             install(DIRECTORY ${SUBMODULE_INCLUDE_DIR}/
-                DESTINATION ${OUTPUT_INCLUDE_DIR}/${SUBMODULE}
+                DESTINATION ${CHRIC_TERMINAL_FOLDER}/PB/${SUBMODULE}
+                FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+            )
+            
+
+            # 安装头文件
+            install(DIRECTORY ${SUBMODULE_INCLUDE_DIR}/
+                DESTINATION ${CHRIC_CLOUD_FOLDER}/PB/${SUBMODULE}
                 FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
             )
             
@@ -123,9 +154,22 @@ endforeach()
 
 # 安装通用头文件
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/pb_export.h")
+    # 安装到cloud
     install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/pb_export.h"
-        DESTINATION ${OUTPUT_INCLUDE_DIR}
+        DESTINATION ${CHRIC_CLOUD_FOLDER}
     )
+    # 安装到terminal
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/pb_export.h"
+        DESTINATION ${CHRIC_TERMINAL_FOLDER}
+    )
+
+
+    if(INSTALL_PB_HEADERS)
+        # 安装头文件
+        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/pb_export.h"
+            DESTINATION ${OUTPUT_INCLUDE_DIR}/PB
+        )
+    endif()
 endif()
 
 # 创建PB配置文件

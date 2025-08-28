@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 
-set(TARGET_NAME libPBUtils)
+set(TARGET_NAME CHRIC_PBUtils)
 
-project(${TARGET_NAME})
+project(${TARGET_NAME} VERSION 1.0.0.0 DESCRIPTION "PB工具库" LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -22,15 +22,6 @@ include_directories(
     ${PB_UTILS_INCLUDE_DIR}
     )
 
-
-# # 设置库搜索路径
-# link_directories(
-#     ${OUTPUT_LIB_DIR}
-#     ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-linux/lib
-#     ${CMAKE_CURRENT_SOURCE_DIR}/../include
-    
-# )
-
 add_library(${TARGET_NAME} SHARED
     source/printUtil.cpp
 )
@@ -41,6 +32,15 @@ target_include_directories(${TARGET_NAME}
     ${PB_INCLUDE_DIR}  # PB 生成的头文件
 )
 
+set_target_properties(${TARGET_NAME} PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    POSITION_INDEPENDENT_CODE ON
+    LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}
+    ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}
+)
+
 # 链接依赖库
 target_link_libraries(${TARGET_NAME}
     PUBLIC
@@ -48,3 +48,10 @@ target_link_libraries(${TARGET_NAME}
     gRPC::grpc++
 )
 
+install(TARGETS ${TARGET_NAME}
+    LIBRARY DESTINATION ${CHRIC_TERMINAL_FOLDER} # 共享库(.so)安装路径
+)
+
+install(TARGETS ${TARGET_NAME}
+    LIBRARY DESTINATION ${CHRIC_CLOUD_FOLDER} # 共享库(.so)安装路径
+)
