@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 #include <memory>
-#include "../include/interfaces/interfaces_request_response.pb.h"
-#include "../include/interfaces/interfaces_grpc.grpc.pb.h"
+#include "interfaces/interfaces_request_response.pb.h"
+#include "interfaces/interfaces_grpc.grpc.pb.h"
 #include "printUtil.h"
 using namespace humanoid_robot::PB::interfaces;
 using namespace humanoid_robot::utils::PB;

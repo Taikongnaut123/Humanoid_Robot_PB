@@ -3,7 +3,7 @@
 #include <vector>
 #include <map>
 #include <cmath>
-#include "../include/common/variant.pb.h"
+#include "common/variant.pb.h"
 using namespace humanoid_robot::PB::common;
 
 // 简单的测试函数
