@@ -28,7 +28,7 @@ set(LIBRARY_TARGETS_CONFIG)
 
 foreach(SUBMODULE ${SUBMODULES})
     if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/source/${SUBMODULE}")
-        message(STATUS "Found PB submodule: ${SUBMODULE}")
+        message(DEBUG "Found PB submodule: ${SUBMODULE}")
         
         # 设置子模块的源文件路径
         set(SUBMODULE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source/${SUBMODULE}")
@@ -145,9 +145,9 @@ foreach(SUBMODULE ${SUBMODULES})
                 FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
             )
             
-            message(STATUS "Created library target: ${LIBRARY_NAME} for submodule: ${SUBMODULE}")
+            message(DEBUG "Created library target: ${LIBRARY_NAME} for submodule: ${SUBMODULE}")
         else()
-            message(WARNING "No source files found for submodule: ${SUBMODULE}")
+            message(DEBUG "No source files found for submodule: ${SUBMODULE}")
         endif()
     endif()
 endforeach()
@@ -187,16 +187,16 @@ configure_file(
 )
 
 # 输出构建信息
-message(STATUS "PB module configuration completed")
-message(STATUS "Library output directory: ${OUTPUT_LIB_DIR}")
-message(STATUS "Include output directory: ${OUTPUT_INCLUDE_DIR}")
+message(DEBUG "=========================PB module configuration begin=========================")
+message(DEBUG "Library output directory: ${OUTPUT_LIB_DIR}")
+message(DEBUG "Include output directory: ${OUTPUT_INCLUDE_DIR}")
 
 # 添加测试选项
 option(BUILD_PB_TESTS "Build PB tests" ON)
 
 # 如果启用测试，添加 tests 子目录
 if(BUILD_PB_TESTS)
-    message(STATUS "Adding PB tests subdirectory...")
+    message(DEBUG "Adding PB tests subdirectory...")
     add_subdirectory(tests)
 endif()
 
@@ -205,6 +205,6 @@ option(BUILD_PB_UTILS "Build PB utils" ON)
 
 # 如果启用工具，添加 utils 子目录
 if(BUILD_PB_UTILS)
-    message(STATUS "Adding PB utils subdirectory...")
+    message(DEBUG "Adding PB utils subdirectory...")
     add_subdirectory(utils)
 endif()

@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 输出目录设置 - 使用父项目的 OUTPUT_BIN_DIR
 if(NOT DEFINED OUTPUT_BIN_DIR)
-    message(FATAL_ERROR "OUTPUT_BIN_DIR must be defined by parent project")
+    message(DEBUG "OUTPUT_BIN_DIR must be defined by parent project")
 endif()
 
 # 设置测试可执行文件的输出目录
@@ -17,14 +17,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_BIN_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_BIN_DIR})
 
-message(STATUS "PB Tests output directory: ${OUTPUT_BIN_DIR}")
-
 # 查找依赖
 find_package(PkgConfig REQUIRED)
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
-
-message(STATUS "PB utils include directory: ${PB_UTILS_INCLUDE_DIR}")
 
 # 启用测试
 enable_testing()
@@ -69,7 +65,7 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        message(STATUS "Created common test: ${TEST_NAME}")
+        message(DEBUG "Created common test: ${TEST_NAME}")
         
     elseif(TEST_NAME MATCHES ".*interfaces.*")
         target_link_libraries(${TEST_NAME} PRIVATE
@@ -79,7 +75,7 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        message(STATUS "Created interfaces test: ${TEST_NAME}")
+        message(DEBUG "Created interfaces test: ${TEST_NAME}")
         
     else()
         # 通用测试，链接所有库
@@ -92,7 +88,7 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
             protobuf::libprotobuf
             gRPC::grpc++
         )
-        message(STATUS "Created general test: ${TEST_NAME}")
+        message(DEBUG "Created general test: ${TEST_NAME}")
     endif()
     
     # 添加到测试列表
@@ -106,6 +102,7 @@ add_custom_target(run_all_tests
 )
 
 # 显示测试信息
-message(STATUS "PB Tests configuration completed")
-message(STATUS "Found test sources: ${TEST_SOURCES}")
-message(STATUS "Tests will be built to: ${OUTPUT_BIN_DIR}")
+message(DEBUG "=========================PB Tests configuration=========================")
+message(DEBUG "PB Tests configuration completed")
+message(DEBUG "Found test sources: ${TEST_SOURCES}")
+message(DEBUG "Tests will be built to: ${OUTPUT_BIN_DIR}")
