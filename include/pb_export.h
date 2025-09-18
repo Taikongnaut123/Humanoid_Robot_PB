@@ -31,6 +31,12 @@
 #define INTERFACES_API __declspec(dllimport)
 #endif
 
+#ifdef COMMUNICATION_EXPORTS
+#define COMMUNICATION_API __declspec(dllexport)
+#else
+#define COMMUNICATION_API __declspec(dllimport)
+#endif
+
 #define PB_LOCAL
 
 #else
@@ -60,12 +66,19 @@
 #define INTERFACES_API __attribute__((visibility("default")))
 #endif
 
+#ifdef COMMUNICATION_EXPORTS
+#define COMMUNICATION_API __attribute__((visibility("default")))
+#else
+#define COMMUNICATION_API __attribute__((visibility("default")))
+#endif
+
 #define PB_LOCAL __attribute__((visibility("hidden")))
 #else
 #define COMMON_API
 #define DETECTION_API
 #define PERCEPTION_API
 #define INTERFACES_API
+#define COMMUNICATION_API
 #define PB_LOCAL
 #endif
 #endif
