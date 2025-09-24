@@ -60,7 +60,7 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
     # 根据测试名称链接对应的库
     if(TEST_NAME MATCHES ".*common.*")
         target_link_libraries(${TEST_NAME} PRIVATE
-            libcommonPB
+            libCHRIC_commonPB
             CHRIC_PBUtils
             protobuf::libprotobuf
             gRPC::grpc++
@@ -69,8 +69,8 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
         
     elseif(TEST_NAME MATCHES ".*interfaces.*")
         target_link_libraries(${TEST_NAME} PRIVATE
-            libinterfacesPB
-            libcommonPB
+            libCHRIC_interfacesPB
+            libCHRIC_commonPB
             CHRIC_PBUtils
             protobuf::libprotobuf
             gRPC::grpc++
@@ -80,10 +80,10 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
     else()
         # 通用测试，链接所有库
         target_link_libraries(${TEST_NAME} PRIVATE
-            libdetectionPB
-            libperceptionPB
-            libcommonPB
-            libinterfacesPB
+            libCHRIC_detectionPB
+            libCHRIC_perceptionPB
+            libCHRIC_commonPB
+            libCHRIC_interfacesPB
             CHRIC_PBUtils
             protobuf::libprotobuf
             gRPC::grpc++

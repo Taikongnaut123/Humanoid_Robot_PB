@@ -48,11 +48,11 @@ foreach(SUBMODULE ${SUBMODULES})
         
         if(SUBMODULE_SOURCES)
             # 创建动态库目标，库名为lib+子模块名+PB
-            set(LIBRARY_NAME "lib${SUBMODULE}PB")
+            set(LIBRARY_NAME "libCHRIC_${SUBMODULE}PB")
             add_library(${LIBRARY_NAME} SHARED ${SUBMODULE_SOURCES})
             
             # 创建带命名空间的别名，方便其他项目使用
-            add_library(PB::${SUBMODULE}PB ALIAS ${LIBRARY_NAME})
+            add_library(PB::CHRIC_${SUBMODULE}PB ALIAS ${LIBRARY_NAME})
             
             # 添加到找到的子模块列表
             list(APPEND FOUND_SUBMODULES ${SUBMODULE})
@@ -68,7 +68,7 @@ foreach(SUBMODULE ${SUBMODULES})
                 VERSION ${PROJECT_VERSION}
                 SOVERSION ${PROJECT_VERSION_MAJOR}
                 POSITION_INDEPENDENT_CODE ON
-                EXPORT_NAME ${SUBMODULE}PB  # 导出时使用子模块名+PB
+                EXPORT_NAME "CHRIC_${SUBMODULE}PB"  # 导出时使用子模块名+PB
                 RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}
             )
             
