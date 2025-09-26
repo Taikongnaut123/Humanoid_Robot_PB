@@ -54,14 +54,14 @@ fi
 
 echo "搜索 Proto 文件目录: $PROTO_SEARCH_DIR"
 
-# 查找build目录（在grpc_project中）
+# 查找build目录（在Humanoid-Robot项目中）
 BUILD_DIR=""
-if [ -d "$PB_ROOT/../build" ]; then
+if [ -d "$PB_ROOT/../../build" ]; then
+    BUILD_DIR="$PB_ROOT/../../build"
+elif [ -d "$PB_ROOT/../build" ]; then
     BUILD_DIR="$PB_ROOT/../build"
-elif [ -d "$PB_ROOT/build" ]; then
-    BUILD_DIR="$PB_ROOT//build"
 else
-    echo "错误: 找不到构建目录，请确保grpc_project已经配置过"
+    echo "错误: 找不到构建目录，请确保Humanoid-Robot项目已经配置过"
     exit 1
 fi
 
@@ -74,13 +74,13 @@ GRPC_PLUGIN_PATH="$BUILD_DIR/vcpkg_installed/x64-linux/tools/grpc/grpc_cpp_plugi
 
 if [ ! -f "$PROTOC_PATH" ]; then
     echo "错误: protoc工具不存在: $PROTOC_PATH"
-    echo "请先在grpc_project目录运行cmake配置以安装vcpkg依赖"
+    echo "请先在Humanoid-Robot根目录运行cmake配置以安装vcpkg依赖"
     exit 1
 fi
 
 if [ ! -f "$GRPC_PLUGIN_PATH" ]; then
     echo "错误: grpc_cpp_plugin工具不存在: $GRPC_PLUGIN_PATH"
-    echo "请先在grpc_project目录运行cmake配置以安装vcpkg依赖"
+    echo "请先在Humanoid-Robot根目录运行cmake配置以安装vcpkg依赖"
     exit 1
 fi
 

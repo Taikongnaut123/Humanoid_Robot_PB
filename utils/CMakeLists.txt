@@ -46,6 +46,7 @@ target_link_libraries(${TARGET_NAME}
     PUBLIC
     protobuf::libprotobuf
     gRPC::grpc++
+    PB::CHRIC_commonPB  # 添加对common PB的依赖
 )
 
 install(TARGETS ${TARGET_NAME}
