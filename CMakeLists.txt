@@ -86,7 +86,7 @@ foreach(SUBMODULE ${SUBMODULES})
                 PUBLIC
                     protobuf::libprotobuf
                     gRPC::grpc++
-                    gRPC::grpc++_reflection
+                    # gRPC::grpc++_reflection
 
             )
             
