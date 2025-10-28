@@ -48,7 +48,7 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
     set_target_properties(${TEST_NAME} PROPERTIES
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
-        RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_BIN_DIR}/examples/framework/PB"
     )
     
     # 设置包含目录
