@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package humanoid_robot.PB.communication;
+
+// RPC 服务：ServiceServer 启动的 gRPC Server
+service RpcService {
+    // 请求/响应模式（Unary RPC）
+    // ServiceClient 调用此 RPC，ServiceServer 处理并返回响应
+    rpc Call(ServiceRequest) returns (ServiceResponse);
+}
+
+message ServiceRequest {
+    string service_name = 1;    // 服务名称
+    string client_id = 2;       // Client 的唯一 ID
+    string node_name = 3;       // Client 所属的节点名称
+    uint64 request_id = 4;      // 请求 ID（用于追踪）
+    bytes payload = 5;          // Protobuf 序列化的用户请求
+}
+
+message ServiceResponse {
+    bool success = 1;           // 是否成功
+    string error_message = 2;   // 错误消息（如果失败）
+    uint64 request_id = 3;      // 对应的请求 ID
+    bytes payload = 4;          // Protobuf 序列化的用户响应
+}

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package humanoid_robot.PB.communication;
+
+// Topic 服务：Publisher 启动的 gRPC Server
+service TopicService {
+    // 订阅 Topic（Server Stream）
+    // Subscriber 调用此 RPC，Publisher 返回持续的消息流
+    rpc Subscribe(SubscribeRequest) returns (stream TopicMessage);
+}
+
+message SubscribeRequest {
+    string topic_name = 1;      // 订阅的 Topic 名称
+    string subscriber_id = 2;   // Subscriber 的唯一 ID
+    string node_name = 3;       // Subscriber 所属的节点名称
+}
+
+message TopicMessage {
+    string topic_name = 1;      // Topic 名称
+    uint64 timestamp = 2;       // 消息时间戳（毫秒）
+    string publisher_id = 3;    // Publisher 的唯一 ID
+    uint64 sequence = 4;        // 消息序列号
+    bytes payload = 5;          // Protobuf 序列化的用户消息
+}
