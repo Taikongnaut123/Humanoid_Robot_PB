@@ -55,11 +55,15 @@ fi
 echo "搜索 Proto 文件目录: $PROTO_SEARCH_DIR"
 
 # 查找build目录（在Humanoid-Robot项目中）
+# PB_ROOT 现在是 framework/common/idl/protobuf
+# 需要向上4级到达项目根目录: ../../../.. -> Humanoid-Robot/
 BUILD_DIR=""
-if [ -d "$PB_ROOT/../../build" ]; then
+if [ -d "$PB_ROOT/../../../../build" ]; then
+    BUILD_DIR="$PB_ROOT/../../../../build"
+elif [ -d "$PB_ROOT/../../../build" ]; then
+    BUILD_DIR="$PB_ROOT/../../../build"
+elif [ -d "$PB_ROOT/../../build" ]; then
     BUILD_DIR="$PB_ROOT/../../build"
-elif [ -d "$PB_ROOT/../build" ]; then
-    BUILD_DIR="$PB_ROOT/../build"
 else
     echo "错误: 找不到构建目录，请确保Humanoid-Robot项目已经配置过"
     exit 1
