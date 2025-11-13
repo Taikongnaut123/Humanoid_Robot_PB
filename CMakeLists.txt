@@ -7,6 +7,93 @@ project(PB
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# 执行 generate_proto.sh 脚本生成 Protobuf 代码
+set(GENERATE_PROTO_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/generate_proto.sh")
+set(PROTO_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto")
+
+if(EXISTS "${GENERATE_PROTO_SCRIPT}")
+    message(STATUS "Checking Protobuf code generation...")
+    
+    # 查找所有 .proto 文件
+    file(GLOB_RECURSE PROTO_FILES "${PROTO_DIR}/*.proto")
+    
+    if(PROTO_FILES)
+        # 获取所有 proto 文件的最新修改时间
+        set(LATEST_PROTO_TIME 0)
+        foreach(PROTO_FILE ${PROTO_FILES})
+            file(TIMESTAMP "${PROTO_FILE}" PROTO_TIME "%s")
+            if(PROTO_TIME GREATER LATEST_PROTO_TIME)
+                set(LATEST_PROTO_TIME ${PROTO_TIME})
+            endif()
+        endforeach()
+        
+        # 检查生成的代码是否存在且是最新的
+        set(NEED_REGENERATE FALSE)
+        file(GLOB_RECURSE GENERATED_FILES 
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/*.pb.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/source/*.pb.cc"
+        )
+        
+        if(NOT GENERATED_FILES)
+            set(NEED_REGENERATE TRUE)
+            message(STATUS "No generated Protobuf files found, will generate...")
+        else()
+            # 检查生成文件是否比 proto 文件旧
+            foreach(GENERATED_FILE ${GENERATED_FILES})
+                if(EXISTS "${GENERATED_FILE}")
+                    file(TIMESTAMP "${GENERATED_FILE}" GEN_TIME "%s")
+                    if(GEN_TIME LESS LATEST_PROTO_TIME)
+                        set(NEED_REGENERATE TRUE)
+                        message(STATUS "Generated files are outdated, will regenerate...")
+                        break()
+                    endif()
+                endif()
+            endforeach()
+        endif()
+        
+        # 如果需要重新生成，执行脚本
+        if(NEED_REGENERATE)
+            message(STATUS "Generating Protobuf code from .proto files...")
+            
+            # 获取所有 proto 子目录
+            file(GLOB PROTO_SUBDIRS RELATIVE "${PROTO_DIR}" "${PROTO_DIR}/*")
+            
+            foreach(SUBDIR ${PROTO_SUBDIRS})
+                if(IS_DIRECTORY "${PROTO_DIR}/${SUBDIR}")
+                    # 为每个子目录执行生成脚本
+                    # 根据子目录名称确定导出符号
+                    string(TOUPPER "${SUBDIR}" SUBDIR_UPPER)
+                    set(EXPORT_SYMBOL "${SUBDIR_UPPER}_API")
+                    
+                    message(STATUS "  Generating for proto/${SUBDIR} with export symbol ${EXPORT_SYMBOL}...")
+                    
+                    execute_process(
+                        COMMAND bash "${GENERATE_PROTO_SCRIPT}" "proto/${SUBDIR}" "${EXPORT_SYMBOL}"
+                        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+                        RESULT_VARIABLE SCRIPT_RESULT
+                        OUTPUT_VARIABLE SCRIPT_OUTPUT
+                        ERROR_VARIABLE SCRIPT_ERROR
+                    )
+                    
+                    if(NOT SCRIPT_RESULT EQUAL 0)
+                        message(WARNING "Failed to generate Protobuf code for ${SUBDIR}:")
+                        message(WARNING "  Output: ${SCRIPT_OUTPUT}")
+                        message(WARNING "  Error: ${SCRIPT_ERROR}")
+                    else()
+                        message(STATUS "  ✓ Successfully generated Protobuf code for ${SUBDIR}")
+                    endif()
+                endif()
+            endforeach()
+        else()
+            message(STATUS "Protobuf code is up to date, skipping generation.")
+        endif()
+    else()
+        message(STATUS "No .proto files found in ${PROTO_DIR}")
+    endif()
+else()
+    message(WARNING "generate_proto.sh script not found at ${GENERATE_PROTO_SCRIPT}")
+endif()
+
 # 查找protobuf和grpc依赖 (通过vcpkg)
 find_package(protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
