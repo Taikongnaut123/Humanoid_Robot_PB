@@ -1,10 +1,12 @@
 #!/bin/bash
 
 # 通用 Protobuf 代码生成脚本
-# 用法: ./generate_proto.sh <proto_directory_path> <export_symbol>
+# 用法: ./generate_proto.sh <proto_directory_path> <export_symbol> [protoc_path] [grpc_plugin_path]
 # 参数:
 #   proto_directory_path: proto文件所在目录路径
 #   export_symbol: 导入导出符号名称（如 IMAGEPROCESSING_PB_API）
+#   protoc_path (可选): protoc工具的路径
+#   grpc_plugin_path (可选): grpc_cpp_plugin工具的路径
 
 set -e
 
@@ -16,24 +18,28 @@ echo "=== 通用 Protobuf 代码生成脚本 ==="
 echo "PB 根目录: $PB_ROOT"
 
 # 检查参数数量
-if [ $# -ne 2 ]; then
-    echo "错误: 需要提供两个参数"
-    echo "用法: $0 <proto_directory_path> <export_symbol>"
+if [ $# -lt 2 ] || [ $# -gt 4 ]; then
+    echo "错误: 参数数量不正确"
+    echo "用法: $0 <proto_directory_path> <export_symbol> [protoc_path] [grpc_plugin_path]"
     echo ""
     echo "参数说明:"
-    echo "  proto_directory_path  proto文件所在目录路径"
-    echo "  export_symbol         导入导出符号名称"
+    echo "  proto_directory_path    proto文件所在目录路径 (必需)"
+    echo "  export_symbol           导入导出符号名称 (必需)"
+    echo "  protoc_path             protoc工具的路径 (可选)"
+    echo "  grpc_plugin_path        grpc_cpp_plugin工具的路径 (可选)"
     echo ""
     echo "示例:"
     echo "  $0 proto/perception IMAGEPROCESSING_PB_API"
     echo "  $0 proto/detection DETECTION_PB_API"
-    echo "  $0 /absolute/path/to/proto CUSTOM_API"
+    echo "  $0 proto/perception IMAGEPROCESSING_PB_API /custom/path/protoc /custom/path/grpc_cpp_plugin"
     exit 1
 fi
 
 # 解析参数
 PROTO_DIR_ARG="$1"
 EXPORT_SYMBOL="$2"
+CUSTOM_PROTOC_PATH="${3:-}"
+CUSTOM_GRPC_PLUGIN_PATH="${4:-}"
 
 echo "Proto目录参数: $PROTO_DIR_ARG"
 echo "导出符号: $EXPORT_SYMBOL"
@@ -54,39 +60,54 @@ fi
 
 echo "搜索 Proto 文件目录: $PROTO_SEARCH_DIR"
 
-# 查找build目录（在Humanoid-Robot项目中）
-# PB_ROOT 现在是 framework/common/idl/protobuf
-# 需要向上4级到达项目根目录: ../../../.. -> Humanoid-Robot/
-BUILD_DIR=""
-if [ -d "$PB_ROOT/../../../../build" ]; then
-    BUILD_DIR="$PB_ROOT/../../../../build"
-elif [ -d "$PB_ROOT/../../../build" ]; then
-    BUILD_DIR="$PB_ROOT/../../../build"
-elif [ -d "$PB_ROOT/../../build" ]; then
-    BUILD_DIR="$PB_ROOT/../../build"
+# 检查protobuf工具路径
+# 如果提供了自定义路径，使用自定义路径；否则从build目录查找
+if [ -n "$CUSTOM_PROTOC_PATH" ] && [ -n "$CUSTOM_GRPC_PLUGIN_PATH" ]; then
+    # 使用传入的自定义路径
+    PROTOC_PATH="$CUSTOM_PROTOC_PATH"
+    GRPC_PLUGIN_PATH="$CUSTOM_GRPC_PLUGIN_PATH"
+    echo "使用自定义工具路径:"
+    echo "  protoc: $PROTOC_PATH"
+    echo "  grpc_cpp_plugin: $GRPC_PLUGIN_PATH"
 else
-    echo "错误: 找不到构建目录，请确保Humanoid-Robot项目已经配置过"
-    exit 1
+    # 查找build目录（在Humanoid-Robot项目中）
+    # PB_ROOT 现在是 framework/common/idl/protobuf
+    # 需要向上4级到达项目根目录: ../../../.. -> Humanoid-Robot/
+    BUILD_DIR=""
+    if [ -d "$PB_ROOT/../../../../build" ]; then
+        BUILD_DIR="$PB_ROOT/../../../../build"
+    elif [ -d "$PB_ROOT/../../../build" ]; then
+        BUILD_DIR="$PB_ROOT/../../../build"
+    elif [ -d "$PB_ROOT/../../build" ]; then
+        BUILD_DIR="$PB_ROOT/../../build"
+    else
+        echo "错误: 找不到构建目录，请确保Humanoid-Robot项目已经配置过"
+        exit 1
+    fi
+
+    echo "使用构建目录: $BUILD_DIR"
+    
+    # 从vcpkg获取工具路径
+    PROTOC_PATH="$BUILD_DIR/vcpkg_installed/x64-linux/tools/protobuf/protoc"
+    GRPC_PLUGIN_PATH="$BUILD_DIR/vcpkg_installed/x64-linux/tools/grpc/grpc_cpp_plugin"
 fi
 
-
-echo "使用构建目录: $BUILD_DIR"
-
-# 检查protobuf工具
-PROTOC_PATH="$BUILD_DIR/vcpkg_installed/x64-linux/tools/protobuf/protoc"
-GRPC_PLUGIN_PATH="$BUILD_DIR/vcpkg_installed/x64-linux/tools/grpc/grpc_cpp_plugin"
-
+# 检查protobuf工具是否存在
 if [ ! -f "$PROTOC_PATH" ]; then
     echo "错误: protoc工具不存在: $PROTOC_PATH"
-    echo "请先在Humanoid-Robot根目录运行cmake配置以安装vcpkg依赖"
+    echo "请先在Humanoid-Robot根目录运行cmake配置以安装vcpkg依赖，或提供正确的protoc路径"
     exit 1
 fi
 
 if [ ! -f "$GRPC_PLUGIN_PATH" ]; then
     echo "错误: grpc_cpp_plugin工具不存在: $GRPC_PLUGIN_PATH"
-    echo "请先在Humanoid-Robot根目录运行cmake配置以安装vcpkg依赖"
+    echo "请先在Humanoid-Robot根目录运行cmake配置以安装vcpkg依赖，或提供正确的grpc_cpp_plugin路径"
     exit 1
 fi
+
+echo "使用工具:"
+echo "  protoc: $PROTOC_PATH"
+echo "  grpc_cpp_plugin: $GRPC_PLUGIN_PATH"
 
 # 查找所有.proto文件
 PROTO_FILES=($(find "$PROTO_SEARCH_DIR" -name "*.proto" -type f))
